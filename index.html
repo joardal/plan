@@ -34,10 +34,52 @@ function valid(s){
   )
  ));
 }
-let storageAvailable=true;
+let storageAvailable=true,cloudSyncStatus='pending',cloudSaveTimer=null;
 try{const stored=localStorage.getItem(key);if(stored){const parsed=JSON.parse(stored);if(valid(parsed))state=parsed;else notify('Den lagrede planen kunne ikke leses. Originalen er åpnet.');}}catch(e){storageAvailable=false;}
-function save(){try{localStorage.setItem(key,JSON.stringify(state));storageAvailable=true;}catch(e){storageAvailable=false;}status();}
-function status(){$('save-status').textContent=storageAvailable?'Lagret lokalt':'Bruk «Last ned kopi»';$('save-status').classList.toggle('failed',!storageAvailable);}
+function setCloudStatus(s){
+ cloudSyncStatus=s;
+ const el=$('save-status');if(!el)return;
+ if(s==='synced'){el.textContent='Delt i skyen';el.classList.remove('failed');}
+ else if(s==='saving'){el.textContent='Lagrer i skyen …';el.classList.remove('failed');}
+ else{el.textContent=storageAvailable?'Lagret lokalt':'Bruk «Last ned kopi»';el.classList.toggle('failed',!storageAvailable);}
+}
+function status(){setCloudStatus(cloudSyncStatus);}
+function save(){
+ try{localStorage.setItem(key,JSON.stringify(state));storageAvailable=true;}catch(e){storageAvailable=false;}
+ setCloudStatus(cloudSyncStatus==='synced'?'saving':cloudSyncStatus);
+ clearTimeout(cloudSaveTimer);
+ cloudSaveTimer=setTimeout(pushToCloud,600);
+}
+async function pushToCloud(){
+ try{
+  setCloudStatus('saving');
+  const res=await fetch('/api/plan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(state)});
+  if(!res.ok){setCloudStatus(res.status===503?'no-kv':'offline');return;}
+  const data=await res.json();
+  if(data.updatedAt)state.updatedAt=data.updatedAt;
+  setCloudStatus('synced');
+ }catch(err){setCloudStatus('offline');}
+}
+async function pullFromCloud(silent=false){
+ try{
+  const res=await fetch('/api/plan');
+  if(!res.ok){setCloudStatus(res.status===503?'no-kv':'offline');return;}
+  const cloudPlan=await res.json();
+  if(!cloudPlan){await pushToCloud();return;}
+  if(valid(cloudPlan)){
+   const isTyping=document.activeElement&&(document.activeElement.tagName==='INPUT'||document.activeElement.tagName==='SELECT');
+   if(JSON.stringify(cloudPlan)!==JSON.stringify(state)){
+    if(!isTyping){
+     state=cloudPlan;
+     try{localStorage.setItem(key,JSON.stringify(state));}catch(e){}
+     renderPlan();renderTotals();
+     if(!silent)notify('Planen er oppdatert med siste endringer fra skyen.');
+    }
+   }
+   setCloudStatus('synced');
+  }
+ }catch(err){setCloudStatus('offline');}
+}
 function notify(message){clearTimeout(toastTimer);$('toast').textContent=message;$('toast').hidden=false;toastTimer=setTimeout(()=>$('toast').hidden=true,3500);}
 function el(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;}
 function totals(){const map=new Map(state.teachers.map(n=>[n,0]));let count=0;for(const g of state.groups)for(const r of g.rows)for(const cell of r.cells)for(const a of cell)if(a.teacher){map.set(a.teacher,(map.get(a.teacher)||0)+g.minutes);count++;}return {map,count,sum:[...map.values()].reduce((a,b)=>a+b,0)};}
@@ -67,7 +109,7 @@ $('download').addEventListener('click',()=>{const copy=clone(state);copy.id='ins
 $('show-extras').checked=false;
 document.querySelectorAll('[data-day]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.day==='all')));
 document.querySelectorAll('[data-section]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.section==='all')));
-status();renderPlan();renderTotals();
+status();renderPlan();renderTotals();pullFromCloud(true);window.addEventListener('focus',()=>pullFromCloud(true));setInterval(()=>pullFromCloud(true),45000);
 })();
 </script>
 </body></html>
