@@ -32,6 +32,16 @@ export async function onRequestPost(context) {
         headers: { 'Content-Type': 'application/json;charset=utf-8' }
       });
     }
+
+    const pin = request.headers.get('X-Admin-Pin');
+    const expectedPin = env.ADMIN_PIN || '7676';
+    if (pin !== expectedPin) {
+      return new Response(JSON.stringify({ error: 'Ugyldig PIN-kode for redigering' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json;charset=utf-8' }
+      });
+    }
+
     const body = await request.json();
     if (!body || typeof body !== 'object' || !Array.isArray(body.groups)) {
       return new Response(JSON.stringify({ error: 'Ugyldig plan-format' }), {
