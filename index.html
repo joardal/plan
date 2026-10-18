@@ -124,19 +124,43 @@ async function pullFromCloud(silent=false){
 }
 function notify(message){clearTimeout(toastTimer);$('toast').textContent=message;$('toast').hidden=false;toastTimer=setTimeout(()=>$('toast').hidden=true,3500);}
 function el(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;}
-function getClassGrade(className){const m=(className||'').match(/^([1-7])/);return m?parseInt(m[1],10):null;}
-function getDutyTime(g,r){
- if(g.kind==='meals'){
-  const grade=getClassGrade(r?r.label:'');
-  return (grade&&grade<=4)?{start:690,end:720,minutes:30,timeStr:'11.30–12.00'}:{start:660,end:690,minutes:30,timeStr:'11.00–11.30'};
+function isEnkeltDuty(r){
+ return !!(r&&r.label&&r.label.toLowerCase().includes('enkelt'));
+}
+function isLunchInspection(g){
+ if(!g||g.kind==='meals')return false;
+ return /11[.:]00\s*[–-]\s*11[.:]30|11[.:]30\s*[–-]\s*12[.:]00/.test(g.time||'');
+}
+function hasMealDutyOnDay(teacher,dayIdx){
+ if(!teacher)return false;
+ const mealsGroup=state.groups.find(x=>x.kind==='meals');
+ if(!mealsGroup)return false;
+ const tLower=teacher.toLocaleLowerCase('nb');
+ const cellIndices=typeof dayIdx==='number'?[dayIdx*2,dayIdx*2+1]:[parseInt(dayIdx,10)];
+ for(const r of mealsGroup.rows){
+  for(const ci of cellIndices){
+   if(r.cells[ci]&&r.cells[ci].some(m=>m.teacher&&m.teacher.toLocaleLowerCase('nb')===tLower)){
+    return true;
+   }
+  }
  }
- const m=(g.time||'').match(/(\d{1,2})[.:](\d{2})\s*[–-]\s*(\d{1,2})[.:](\d{2})/);
+ return false;
+}
+function isDoubleDuty(teacher,g,r,dayIdx){
+ if(!teacher||!isEnkeltDuty(r))return false;
+ if(isLunchInspection(g)){
+  return hasMealDutyOnDay(teacher,dayIdx);
+ }
+ return false;
+}
+function parseDutyTime(timeStr){
+ const m=(timeStr||'').match(/(\d{1,2})[.:](\d{2})\s*[–-]\s*(\d{1,2})[.:](\d{2})/);
  if(m){
   const start=parseInt(m[1],10)*60+parseInt(m[2],10);
   const end=parseInt(m[3],10)*60+parseInt(m[4],10);
-  return {start,end,minutes:g.minutes||(end-start),timeStr:g.time};
+  return {start,end};
  }
- return {start:null,end:null,minutes:g.minutes||0,timeStr:g.time};
+ return {start:null,end:null};
 }
 function mergeIntervals(intervals){
  if(!intervals.length)return [];
@@ -152,42 +176,37 @@ function mergeIntervals(intervals){
 function calculateDayMinutes(dutyList){
  const intervals=[];let unparsed=0;
  for(const d of dutyList){
+  if(d.isDouble||d.isDoubleDuty){continue;}
   if(d.start!=null&&d.end!=null&&d.end>d.start){intervals.push([d.start,d.end]);}
   else{unparsed+=(d.minutes||0);}
  }
+ if(!intervals.length)return unparsed;
  return mergeIntervals(intervals).reduce((sum,iv)=>sum+(iv[1]-iv[0]),0)+unparsed;
-}
-function hasConcurrentMealDuty(teacher,dayIdx,dutyRange){
- if(!teacher||!dutyRange||dutyRange.start==null||dutyRange.end==null)return false;
- const mealsGroup=state.groups.find(x=>x.kind==='meals');
- if(!mealsGroup)return false;
- const tLower=teacher.toLocaleLowerCase('nb');
- const cellIndices=typeof dayIdx==='number'?[dayIdx*2,dayIdx*2+1]:[parseInt(dayIdx,10)];
- for(const r of mealsGroup.rows){
-  const mRange=getDutyTime(mealsGroup,r);
-  if(mRange.start==null||mRange.end==null)continue;
-  if(Math.max(dutyRange.start,mRange.start)>=Math.min(dutyRange.end,mRange.end))continue;
-  for(const ci of cellIndices){
-   if(r.cells[ci]&&r.cells[ci].some(m=>m.teacher&&m.teacher.toLocaleLowerCase('nb')===tLower))return true;
-  }
- }
- return false;
 }
 function totals(){
  const teacherDayDuties=new Map(state.teachers.map(n=>[n,new Map()]));
  let count=0;
  for(const g of state.groups){
   for(const r of g.rows){
-   const range=getDutyTime(g,r);
+   const isMeals=g.kind==='meals';
+   const parsed=parseDutyTime(g.time);
    r.cells.forEach((cell,ci)=>{
     const dayKey=ci<10?Math.floor(ci/2):'extra_'+ci;
+    const dayParam=ci<10?Math.floor(ci/2):ci;
     for(const a of cell){
      if(a.teacher){
       count++;
       const daysMap=teacherDayDuties.get(a.teacher);
       if(daysMap){
        if(!daysMap.has(dayKey))daysMap.set(dayKey,[]);
-       daysMap.get(dayKey).push(range);
+       const double=isDoubleDuty(a.teacher,g,r,dayParam);
+       daysMap.get(dayKey).push({
+        start:isMeals?660:parsed.start,
+        end:isMeals?690:parsed.end,
+        minutes:isMeals?30:g.minutes,
+        isDouble:double,
+        isDoubleDuty:double
+       });
       }
      }
     }
@@ -214,19 +233,18 @@ function updateDoubleDutyBadges(){
   const dayIdx=alloc.dataset.dayIdx==='extra'?parseInt(alloc.dataset.extraIdx,10):parseInt(alloc.dataset.dayIdx,10);
   const groupIdx=parseInt(alloc.dataset.groupIdx,10);
   const g=state.groups[groupIdx];
-  const dutyRange=getDutyTime(g,{label:'enkeltelever'});
-  const isDouble=!!(teacher&&hasConcurrentMealDuty(teacher,dayIdx,dutyRange));
+  const isDouble=!!(teacher&&g&&isDoubleDuty(teacher,g,{label:'enkeltelever'},dayIdx));
   const badge=alloc.querySelector('.double-duty-badge');
   if(badge)badge.hidden=!isDouble;
  });
 }
 function renderCell(g,r,indices,cellLabel){
  const box=el('div');
- const isEnkelt=r.label.toLowerCase().includes('enkelt');
- const range=getDutyTime(g,r);
+ const isEnkelt=isEnkeltDuty(r);
  const groupIdx=state.groups.indexOf(g);
  for(const ci of indices){
   const dayIdx=ci<10?Math.floor(ci/2):'extra';
+  const dayParam=ci<10?dayIdx:ci;
   r.cells[ci].forEach((a,ai)=>{
    if(a.marker){
     const remark=el('div','cell-remark');
@@ -286,7 +304,7 @@ function renderCell(g,r,indices,cellLabel){
 
     const doubleBadge=el('div','double-duty-badge','dobbeltvakt');
     doubleBadge.title='Dobbeltvakt: følger enkeltelev samtidig som tilsyn ved spising';
-    doubleBadge.hidden=!(a.teacher&&hasConcurrentMealDuty(a.teacher,dayIdx==='extra'?ci:dayIdx,range));
+    doubleBadge.hidden=!(a.teacher&&isDoubleDuty(a.teacher,g,r,dayParam));
     field.append(doubleBadge);
    }else if(a.note){
     field.append(el('span','note',a.note==='()'?'I parentes':a.note));
@@ -375,22 +393,24 @@ function getTeacherDuties(teacherName){
  const tLower=teacherName.toLocaleLowerCase('nb');
  for(const g of state.groups){
   for(const r of g.rows){
-   const range=getDutyTime(g,r);
+   const isMeals=g.kind==='meals';
+   const parsed=parseDutyTime(g.time);
    r.cells.forEach((cell,ci)=>{
     for(const a of cell){
      if(a.teacher&&a.teacher.toLocaleLowerCase('nb')===tLower){
       const dayIdx=ci<10?Math.floor(ci/2):5;
-      const isMeals=g.kind==='meals';
-      const timeStr=isMeals?'Spising · '+range.timeStr:g.time;
+      const dayParam=ci<10?dayIdx:ci;
+      const double=isDoubleDuty(a.teacher,g,r,dayParam);
+      const isEnkelt=isEnkeltDuty(r);
+      const timeStr=isMeals?'Spising (30 min)':g.time;
       const noteStr=a.note?(a.note==='()'?'I parentes':a.note):'';
-      const isEnkelt=r.label.toLowerCase().includes('enkelt');
-      const isDouble=isEnkelt&&hasConcurrentMealDuty(a.teacher,ci<10?dayIdx:ci,range);
       days[dayIdx].push({
        time:timeStr,
        rawTime:g.time,
-       start:range.start,
-       end:range.end,
-       minutes:range.minutes,
+       start:isMeals?660:parsed.start,
+       end:isMeals?690:parsed.end,
+       minutes:double?0:(isMeals?30:g.minutes),
+       originalMinutes:isMeals?30:g.minutes,
        label:r.label,
        detail:r.detail||'',
        note:noteStr,
@@ -398,7 +418,8 @@ function getTeacherDuties(teacherName){
        kind:g.kind||'inspection',
        isExtra:ci>=10,
        ci:ci,
-       isDoubleDuty:isDouble
+       isDouble:double,
+       isDoubleDuty:double
       });
       count++;
      }
@@ -460,7 +481,7 @@ function renderTeacherSchedule(teacherName){
    const shiftList=el('div','schedule-shift-list');
    for(const s of list){
     const item=el('div','schedule-shift-item');
-    const dur=el('span','schedule-shift-duration',s.minutes+'m');
+    const dur=el('span','schedule-shift-duration',s.isDoubleDuty?'0m (dobbeltvakt)':s.minutes+'m');
     const time=el('div','schedule-shift-time',s.time);
     time.append(dur);
     const label=el('div','schedule-shift-label',s.label);
