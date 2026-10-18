@@ -4,18 +4,19 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Vaktplan med lærervalg og automatisk oversikt over inspeksjonsminutter.">
 <title>Inspeksjon · Ukesplan</title>
-<!-- deploy-trigger: clean-header-and-pure-decor -->
+<!-- deploy-trigger: teacher-schedule-and-hover-overlay -->
 <style>
-:root{--bg:#f5f4ef;--paper:#fff;--ink:#203330;--muted:#6b7975;--line:#e3e8e3;--green:#166753;--soft:#eaf3ee;--amber:#a16b26;--radius:18px;--shadow:0 6px 30px #20333006}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 "Segoe UI",Arial,sans-serif}button,input,select{font:inherit}button{cursor:pointer}button:disabled{cursor:default}button,input,select{outline-offset:3px}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #5cb9a1}button{color:inherit}button svg{width:17px;height:17px;vertical-align:middle;flex-shrink:0}svg{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.top{padding:29px 36px 23px;display:flex;justify-content:space-between;align-items:center;gap:20px;border-bottom:1px solid var(--line);background:#fbfaf6}.brand{display:flex;gap:14px;align-items:center}.mark{display:grid;place-items:center;width:47px;height:47px;background:var(--green);color:white;border-radius:14px}.mark svg{width:25px;height:25px}.eyebrow{font-size:10px;font-weight:700;letter-spacing:1.8px;color:var(--green);margin:0 0 3px}h1{font-size:29px;line-height:1.1;font-weight:650;letter-spacing:-1px;margin:0}.actions{display:flex;align-items:center;gap:10px}.button{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;background:white;border:1px solid #d5ddd7;border-radius:9px;font-weight:600;font-size:12px;white-space:nowrap}.button:hover{background:#f0f5f1}.button.primary{background:var(--green);border-color:var(--green);color:white}.button.primary:hover{background:#0e5543}.save{font-size:11px;color:var(--muted);display:flex;gap:6px;align-items:center}.save:before{content:"";width:6px;height:6px;border-radius:50%;background:#44a080}.save.failed{color:#9c4028}.save.failed:before{background:#b75436}.page{padding:28px 36px 40px;max-width:2200px;margin:auto}.intro{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;margin-bottom:22px}.intro h2{font-size:20px;letter-spacing:-.5px;margin:0 0 4px;font-weight:650}.intro p{color:var(--muted);margin:0;font-size:12px}.metrics{display:flex;gap:27px}.metric strong{display:block;font-size:24px;line-height:1.1;font-variant-numeric:tabular-nums;font-weight:600;letter-spacing:-.8px}.metric span{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 305px;gap:22px;align-items:start}.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}.plan-tools{display:flex;gap:12px;justify-content:space-between;align-items:center;padding:15px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}.days{display:flex;gap:3px;background:#f3f5f1;padding:3px;border-radius:9px}.day{padding:7px 10px;border:0;border-radius:7px;background:transparent;color:var(--muted);font-size:11px;font-weight:600}.day[aria-pressed=true]{background:white;color:var(--green);box-shadow:0 1px 4px #20333012}.extra-toggle{border:0;background:none;font-size:11px;color:var(--muted);display:flex;gap:7px;align-items:center}.extra-toggle input{accent-color:var(--green)}.table-scroll{overflow:auto;max-height:calc(100vh - 272px);min-height:340px}table{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed;min-width:800px}thead{position:sticky;top:0;z-index:5}thead th{background:#f8faf7;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#6b7975;text-align:left;height:42px;padding:12px;border-bottom:1px solid var(--line);font-weight:650}thead th:first-child{width:169px;position:sticky;left:0;z-index:6}thead th.extra-head{width:250px}.period td{padding:13px 15px;background:var(--soft);border-top:1px solid #dce7de;border-bottom:1px solid #dce7de}.period-title{display:flex;align-items:center;gap:11px}.period-title strong{font-size:13px;font-variant-numeric:tabular-nums}.period-title .grade{font-size:10px;color:#5f776e}.duration{margin-left:auto;font-size:10px;font-weight:650;color:var(--green);background:white;border-radius:5px;padding:3px 7px}.row-label{position:sticky;left:0;z-index:2;background:white;text-align:left;padding:15px;border-bottom:1px solid #edf0eb;border-right:1px solid var(--line);font-size:11px;font-weight:600;vertical-align:top}.row-label small{display:block;font-size:10px;font-weight:400;color:var(--muted);margin-top:5px;line-height:1.4}.area-row:nth-child(even) .row-label{background:#fcfdfb}.area-row td{padding:9px 7px 8px;vertical-align:top;border-bottom:1px solid #edf0eb;border-right:1px solid #f0f3ee}.area-row td:last-child{border-right:0}.allocation{display:flex;align-items:center;gap:3px;margin-bottom:4px;border-radius:7px;background:#f3f6f2;border:1px solid transparent;min-height:29px;position:relative}.allocation:hover{border-color:#c4d7cb;background:#edf4ed}.allocation.highlight{background:#d7efe2;border-color:#56a98b}.allocation select{min-width:0;flex:1;width:100%;padding:5px 18px 5px 7px;background:transparent;border:0;color:#29463b;font-size:11px;border-radius:6px;cursor:pointer}.allocation select:invalid{color:var(--muted)}.remove{border:0;background:none;color:#91a296;font-size:16px;line-height:1;width:19px;height:26px;flex-shrink:0;padding:0}.remove:hover{color:#a34a36;background:#fbeee8;border-radius:5px}.teacher-field{min-width:0;flex:1}.teacher-field .note{display:block;padding:0 6px 5px;font-size:9px;color:#7a8e81;line-height:1.1}.add-slot{background:none;border:0;border-radius:5px;color:#8a9b90;padding:4px 7px;font-size:10px;display:block}.add-slot:hover{background:var(--soft);color:var(--green)}.extras details{font-size:10px;margin:3px 0}.extras summary{cursor:pointer;color:var(--amber);padding:4px 5px;list-style-position:inside}.extra-slot{margin:7px 0;padding-top:5px;border-top:1px solid #eae6de}.extra-slot-label{font-size:9px;letter-spacing:.5px;text-transform:uppercase;color:#9c8d73;margin-bottom:3px}.plan-foot{padding:13px 17px;border-top:1px solid var(--line);font-size:10px;color:var(--muted);background:#fafbf8}.sidebar{position:sticky;top:18px}.side-head{padding:20px 20px 13px}.side-head h2{margin:0;font-size:17px;letter-spacing:-.4px}.side-head p{margin:4px 0 13px;color:var(--muted);font-size:11px}.search-wrap{position:relative}.search-wrap svg{position:absolute;left:11px;top:10px;width:15px;height:15px;color:#8b9b91}.search-wrap input{width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 10px 8px 34px;font-size:11px;background:#fafbf8}.sort{display:flex;justify-content:space-between;align-items:center;margin-top:12px;color:var(--muted);font-size:10px}.sort select{font-size:10px;color:var(--muted);border:0;background:transparent;max-width:125px}.totals{max-height:calc(100vh - 510px);min-height:210px;overflow:auto;padding:0 13px 8px}.total-row{display:flex;width:100%;text-align:left;align-items:center;gap:10px;border:0;border-radius:8px;background:white;padding:9px 7px;color:var(--ink)}.total-row:hover,.total-row[aria-pressed=true]{background:var(--soft)}.total-name{font-size:11px;flex:1;min-width:0}.total-value{font-size:12px;font-variant-numeric:tabular-nums;font-weight:650;white-space:nowrap}.total-value small{color:var(--muted);font-size:9px;font-weight:400}.total-bar{height:3px;width:56px;background:#eef1eb;border-radius:2px;overflow:hidden}.total-bar span{display:block;height:100%;background:#63a58a;border-radius:2px}.new-teacher{border-top:1px solid var(--line);padding:15px 20px;background:#fafbf8}.new-teacher label{display:block;font-size:10px;font-weight:650;margin-bottom:7px}.name-input{display:flex;gap:6px}.name-input input{min-width:0;flex:1;width:100%;border:1px solid #d5ddd7;border-radius:7px;padding:9px;font-size:11px;background:white}.name-input button{border:0;background:var(--green);color:white;border-radius:7px;width:34px;font-size:18px}.form-message{font-size:10px;color:var(--green);min-height:16px;display:block;margin-top:5px}.privacy{color:var(--muted);font-size:10px;line-height:1.6;margin:12px 6px 0}.empty{padding:15px;color:var(--muted);font-size:11px}.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:11px 18px;background:#203e33;color:white;border-radius:10px;font-size:12px;box-shadow:0 5px 20px #0002;z-index:20}.focus-hint{font-size:11px;color:var(--green);margin:10px 0 0;display:flex;gap:8px;align-items:center}.focus-hint button{background:none;border:0;text-decoration:underline;color:var(--green);font-size:11px}[hidden]{display:none!important}@media(min-width:1700px){.workspace{grid-template-columns:minmax(0,1fr) 335px}table{min-width:1100px}.allocation select{font-size:12px}.row-label{font-size:12px}}@media(max-width:1100px){.workspace{grid-template-columns:minmax(0,1fr) 270px}.page{padding:22px 20px}.top{padding:24px 20px}.metrics{gap:15px}.metric strong{font-size:21px}.total-bar{display:none}.days .day{padding:7px}.plan-tools{padding:12px}}@media(max-width:820px){.workspace{grid-template-columns:1fr}.sidebar{position:static}.top{align-items:flex-start}.actions{flex-wrap:wrap;justify-content:flex-end;max-width:190px}.save{width:100%;justify-content:flex-end}.print-button{display:none}.intro{align-items:flex-start}.intro p{max-width:250px}.metrics{gap:12px}.metric strong{font-size:20px}.metric span{font-size:8px}.totals{max-height:340px}.table-scroll{max-height:66vh}.top h1{font-size:25px}}@media(max-width:520px){.page{padding:18px 12px}.top{padding:20px 14px}.mark{width:38px;height:38px;border-radius:11px}.brand{gap:9px}.eyebrow{font-size:8px}.top h1{font-size:23px}.button{padding:9px 10px;font-size:10px}.intro{display:block}.metrics{margin-top:17px;gap:30px}.intro p{max-width:none}.plan-tools{gap:9px}.days{width:100%;justify-content:space-between}.day{font-size:10px}thead th:first-child{width:145px}.row-label{padding:12px}.table-scroll{max-height:63vh}}@media print{body{background:white;font-size:10px}.top{padding:10px 0}.page{padding:15px 0}.actions,.plan-tools,.add-slot,.remove,.new-teacher,.privacy,.search-wrap,.sort,.toast,.focus-hint{display:none!important}.workspace{display:block}.card{box-shadow:none;border:1px solid #ddd;overflow:visible}.table-scroll{overflow:visible;max-height:none}.sidebar{position:static;margin-top:20px}.totals{max-height:none;columns:3}.total-row{break-inside:avoid}.intro{margin-bottom:10px}.allocation{break-inside:avoid;background:none}.allocation select{appearance:none;color:black;padding-right:0}.table-scroll table{min-width:0;font-size:9px;table-layout:fixed}thead{position:static}.row-label,thead th:first-child{position:static;width:120px}.period{break-after:avoid}.area-row{break-inside:avoid}.plan-foot{font-size:9px}.total-bar{display:none}}
-.sections{display:flex;gap:22px;padding:0 18px;border-bottom:1px solid var(--line)}.sections button{background:none;border:0;border-bottom:2px solid transparent;padding:14px 0 12px;font-size:11px;color:var(--muted);font-weight:600}.sections button[aria-pressed=true]{color:var(--green);border-bottom-color:var(--green)}.cell-remark{display:flex;align-items:center;gap:4px;padding:6px 7px;font-size:10px;color:var(--muted);background:#f6f6f1;border-radius:6px;margin:3px 0 6px}.cell-remark span{flex:1}.grade-row td,.grade-row th{font-size:10px;padding:5px 12px;background:#f6f9f5;color:var(--muted);font-weight:400;text-align:left;border-bottom:1px solid var(--line)}.note-edit{display:inline-flex;align-items:center;gap:1px;padding:0 6px 4px;font-size:9px;color:#7a8e81}.note-paren{color:#7a8e81;font-weight:600;font-size:10px;user-select:none;cursor:pointer}.note-input{border:1px solid transparent;background:transparent;color:#29463b;font-size:10px;font-weight:600;text-transform:uppercase;padding:0 2px;border-radius:4px;width:48px;text-align:center;letter-spacing:.5px;cursor:text}.note-input:hover{border-color:#c4d7cb;background:white}.note-input:focus{border-color:#56a98b;background:white;outline:none}.note-input::placeholder{color:#b0c0b7;font-weight:400}.is-readonly .allocation select{pointer-events:none;color:var(--ink);opacity:1;background:transparent;-webkit-appearance:none;appearance:none;padding-right:7px}.is-readonly .remove,.is-readonly .add-slot,.is-readonly .new-teacher{display:none!important}.is-readonly .note-input{pointer-events:none;border-color:transparent!important;background:transparent!important;color:#29463b}.is-readonly .note-edit.is-empty{display:none!important}.is-readonly .note-paren{cursor:default;pointer-events:none}.is-readonly .sidebar{display:none!important}.is-readonly .workspace{grid-template-columns:1fr!important}.auth-btn{display:inline-flex;align-items:center;gap:6px}.auth-btn.is-unlocked{background:#eaf3ee;color:var(--green);border-color:#b4dacb}.pin-modal{border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 40px #20333026;padding:22px 24px;max-width:300px;width:90%;background:white;color:var(--ink)}.pin-modal::backdrop{background:#2033304d;backdrop-filter:blur(3px)}.pin-modal h3{margin:0 0 6px;font-size:16px;font-weight:650}.pin-modal p{margin:0 0 14px;font-size:12px;color:var(--muted)}.pin-modal input{width:100%;border:1px solid #d5ddd7;border-radius:8px;padding:9px;font-size:22px;letter-spacing:6px;text-align:center;box-sizing:border-box;margin-bottom:12px}.pin-modal input:focus{border-color:var(--green);outline:none}.pin-actions{display:flex;gap:8px;justify-content:flex-end}.pin-error{color:#b75436;font-size:11px;margin-top:9px;text-align:center}.kommune-logo{height:44px;width:auto;display:block;object-fit:contain}.brand-divider{width:1px;height:38px;background:#d5ddd7;margin:0 4px}.hero-panorama{position:relative;height:160px;overflow:hidden;border-bottom:1px solid var(--line);background:#1a3d31 url('img/skole_drone.jpg') center 44% / cover no-repeat}@media(max-width:520px){.kommune-logo{height:34px}.brand-divider{height:28px}.hero-panorama{height:120px}}@media print{.sections{display:none}.note-edit.is-empty{display:none!important}.note-input{border:none!important;background:none!important;padding:0!important;color:black!important}#auth-btn,.hero-panorama{display:none!important}}
+:root{--bg:#f5f4ef;--paper:#fff;--ink:#203330;--muted:#6b7975;--line:#e3e8e3;--green:#166753;--soft:#eaf3ee;--amber:#a16b26;--radius:18px;--shadow:0 6px 30px #20333006}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 "Segoe UI",Arial,sans-serif}button,input,select{font:inherit}button{cursor:pointer}button:disabled{cursor:default}button,input,select{outline-offset:3px}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #5cb9a1}button{color:inherit}button svg{width:17px;height:17px;vertical-align:middle;flex-shrink:0}svg{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.top{padding:29px 36px 23px;display:flex;justify-content:space-between;align-items:center;gap:20px;border-bottom:1px solid var(--line);background:#fbfaf6}.brand{display:flex;gap:14px;align-items:center}.mark{display:grid;place-items:center;width:47px;height:47px;background:var(--green);color:white;border-radius:14px}.mark svg{width:25px;height:25px}.eyebrow{font-size:10px;font-weight:700;letter-spacing:1.8px;color:var(--green);margin:0 0 3px}h1{font-size:29px;line-height:1.1;font-weight:650;letter-spacing:-1px;margin:0}.actions{display:flex;align-items:center;gap:10px}.button{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;background:white;border:1px solid #d5ddd7;border-radius:9px;font-weight:600;font-size:12px;white-space:nowrap}.button:hover{background:#f0f5f1}.button.primary{background:var(--green);border-color:var(--green);color:white}.button.primary:hover{background:#0e5543}.save{font-size:11px;color:var(--muted);display:flex;gap:6px;align-items:center}.save:before{content:"";width:6px;height:6px;border-radius:50%;background:#44a080}.save.failed{color:#9c4028}.save.failed:before{background:#b75436}.page{padding:28px 36px 40px;max-width:2200px;margin:auto}.intro{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;margin-bottom:22px}.intro h2{font-size:20px;letter-spacing:-.5px;margin:0 0 4px;font-weight:650}.intro p{color:var(--muted);margin:0;font-size:12px}.metrics{display:flex;gap:27px}.metric strong{display:block;font-size:24px;line-height:1.1;font-variant-numeric:tabular-nums;font-weight:600;letter-spacing:-.8px}.metric span{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 305px;gap:22px;align-items:start}.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}.plan-tools{display:flex;gap:12px;justify-content:space-between;align-items:center;padding:15px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}.days{display:flex;gap:3px;background:#f3f5f1;padding:3px;border-radius:9px}.day{padding:7px 10px;border:0;border-radius:7px;background:transparent;color:var(--muted);font-size:11px;font-weight:600}.day[aria-pressed=true]{background:white;color:var(--green);box-shadow:0 1px 4px #20333012}.extra-toggle{border:0;background:none;font-size:11px;color:var(--muted);display:flex;gap:7px;align-items:center}.extra-toggle input{accent-color:var(--green)}.table-scroll{overflow:auto;max-height:calc(100vh - 272px);min-height:340px}table{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed;min-width:800px}thead{position:sticky;top:0;z-index:5}thead th{background:#f8faf7;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#6b7975;text-align:left;height:42px;padding:12px;border-bottom:1px solid var(--line);font-weight:650}thead th:first-child{width:169px;position:sticky;left:0;z-index:6}thead th.extra-head{width:250px}.period td{padding:13px 15px;background:var(--soft);border-top:1px solid #dce7de;border-bottom:1px solid #dce7de}.period-title{display:flex;align-items:center;gap:11px}.period-title strong{font-size:13px;font-variant-numeric:tabular-nums}.period-title .grade{font-size:10px;color:#5f776e}.duration{margin-left:auto;font-size:10px;font-weight:650;color:var(--green);background:white;border-radius:5px;padding:3px 7px}.row-label{position:sticky;left:0;z-index:2;background:white;text-align:left;padding:15px;border-bottom:1px solid #edf0eb;border-right:1px solid var(--line);font-size:11px;font-weight:600;vertical-align:top}.row-label small{display:block;font-size:10px;font-weight:400;color:var(--muted);margin-top:5px;line-height:1.4}.area-row:nth-child(even) .row-label{background:#fcfdfb}.area-row td{padding:9px 7px 8px;vertical-align:top;border-bottom:1px solid #edf0eb;border-right:1px solid #f0f3ee}.area-row td:last-child{border-right:0}.allocation{display:flex;align-items:center;gap:3px;margin-bottom:4px;border-radius:7px;background:#f3f6f2;border:1px solid transparent;min-height:29px;position:relative}.allocation:hover{border-color:#c4d7cb;background:#edf4ed}.allocation.highlight{background:#d7efe2;border-color:#56a98b}.allocation select{min-width:0;flex:1;width:100%;padding:5px 18px 5px 7px;background:transparent;border:0;color:#29463b;font-size:11px;border-radius:6px;cursor:pointer}.allocation select:invalid{color:var(--muted)}.remove{border:0;background:none;color:#91a296;font-size:16px;line-height:1;width:19px;height:26px;flex-shrink:0;padding:0}.remove:hover{color:#a34a36;background:#fbeee8;border-radius:5px}.teacher-field{min-width:0;flex:1}.teacher-field .note{display:block;padding:0 6px 5px;font-size:9px;color:#7a8e81;line-height:1.1}.add-slot{background:none;border:0;border-radius:5px;color:#8a9b90;padding:4px 7px;font-size:10px;display:block}.add-slot:hover{background:var(--soft);color:var(--green)}.extras details{font-size:10px;margin:3px 0}.extras summary{cursor:pointer;color:var(--amber);padding:4px 5px;list-style-position:inside}.extra-slot{margin:7px 0;padding-top:5px;border-top:1px solid #eae6de}.extra-slot-label{font-size:9px;letter-spacing:.5px;text-transform:uppercase;color:#9c8d73;margin-bottom:3px}.plan-foot{padding:13px 17px;border-top:1px solid var(--line);font-size:10px;color:var(--muted);background:#fafbf8}.sidebar{position:sticky;top:18px}.side-head{padding:20px 20px 13px}.side-head h2{margin:0;font-size:17px;letter-spacing:-.4px}.side-head p{margin:4px 0 13px;color:var(--muted);font-size:11px}.search-wrap{position:relative}.search-wrap svg{position:absolute;left:11px;top:10px;width:15px;height:15px;color:#8b9b91}.search-wrap input{width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 10px 8px 34px;font-size:11px;background:#fafbf8}.sort{display:flex;justify-content:space-between;align-items:center;margin-top:12px;color:var(--muted);font-size:10px}.sort select{font-size:10px;color:var(--muted);border:0;background:transparent;max-width:125px}.totals{max-height:calc(100vh - 510px);min-height:210px;overflow:auto;padding:0 13px 8px}.total-row{display:flex;width:100%;text-align:left;align-items:center;gap:10px;border:0;border-radius:8px;background:white;padding:9px 7px;color:var(--ink)}.total-row:hover,.total-row[aria-pressed=true]{background:var(--soft)}.total-name{font-size:11px;flex:1;min-width:0}.total-value{font-size:12px;font-variant-numeric:tabular-nums;font-weight:650;white-space:nowrap}.total-value small{color:var(--muted);font-size:9px;font-weight:400}.total-bar{height:3px;width:56px;background:#eef1eb;border-radius:2px;overflow:hidden}.total-bar span{display:block;height:100%;background:#63a58a;border-radius:2px}.new-teacher{border-top:1px solid var(--line);padding:15px 20px;background:#fafbf8}.new-teacher label{display:block;font-size:10px;font-weight:650;margin-bottom:7px}.name-input{display:flex;gap:6px}.name-input input{min-width:0;flex:1;width:100%;border:1px solid #d5ddd7;border-radius:7px;padding:9px;font-size:11px;background:white}.name-input button{border:0;background:var(--green);color:white;border-radius:7px;width:34px;font-size:18px}.form-message{font-size:10px;color:var(--green);min-height:16px;display:block;margin-top:5px}.privacy{color:var(--muted);font-size:10px;line-height:1.6;margin:12px 6px 0}.empty{padding:15px;color:var(--muted);font-size:11px}.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:11px 18px;background:#203e33;color:white;border-radius:10px;font-size:12px;box-shadow:0 5px 20px #0002;z-index:20}.focus-hint{font-size:11px;color:var(--green);margin:10px 0 0;display:flex;gap:8px;align-items:center}.focus-hint button{background:none;border:0;text-decoration:underline;color:var(--green);font-size:11px}[hidden]{display:none!important}@media(min-width:1700px){.workspace{grid-template-columns:minmax(0,1fr) 335px}table{min-width:1100px}.allocation select{font-size:12px}.row-label{font-size:12px}}@media(max-width:1100px){.workspace{grid-template-columns:minmax(0,1fr) 270px}.page{padding:22px 20px}.top{padding:24px 20px}.metrics{gap:15px}.metric strong{font-size:21px}.total-bar{display:none}.days .day{padding:7px}.plan-tools{padding:12px}}@media(max-width:820px){.workspace{grid-template-columns:1fr}.sidebar{position:static}.top{align-items:flex-start}.actions{flex-wrap:wrap;justify-content:flex-end;max-width:380px}.save{width:100%;justify-content:flex-end}.print-button{display:none}.intro{align-items:flex-start}.intro p{max-width:250px}.metrics{gap:12px}.metric strong{font-size:20px}.metric span{font-size:8px}.totals{max-height:340px}.table-scroll{max-height:66vh}.top h1{font-size:25px}}@media(max-width:520px){.page{padding:18px 12px}.top{padding:20px 14px}.mark{width:38px;height:38px;border-radius:11px}.brand{gap:9px}.eyebrow{font-size:8px}.top h1{font-size:23px}.button{padding:9px 10px;font-size:10px}.intro{display:block}.metrics{margin-top:17px;gap:30px}.intro p{max-width:none}.plan-tools{gap:9px}.days{width:100%;justify-content:space-between}.day{font-size:10px}thead th:first-child{width:145px}.row-label{padding:12px}.table-scroll{max-height:63vh}}@media print{body{background:white;font-size:10px}.top{padding:10px 0}.page{padding:15px 0}.actions,.plan-tools,.add-slot,.remove,.new-teacher,.privacy,.search-wrap,.sort,.toast,.focus-hint{display:none!important}.workspace{display:block}.card{box-shadow:none;border:1px solid #ddd;overflow:visible}.table-scroll{overflow:visible;max-height:none}.sidebar{position:static;margin-top:20px}.totals{max-height:none;columns:3}.total-row{break-inside:avoid}.intro{margin-bottom:10px}.allocation{break-inside:avoid;background:none}.allocation select{appearance:none;color:black;padding-right:0}.table-scroll table{min-width:0;font-size:9px;table-layout:fixed}thead{position:static}.row-label,thead th:first-child{position:static;width:120px}.period{break-after:avoid}.area-row{break-inside:avoid}.plan-foot{font-size:9px}.total-bar{display:none}}
+.sections{display:flex;gap:22px;padding:0 18px;border-bottom:1px solid var(--line)}.sections button{background:none;border:0;border-bottom:2px solid transparent;padding:14px 0 12px;font-size:11px;color:var(--muted);font-weight:600}.sections button[aria-pressed=true]{color:var(--green);border-bottom-color:var(--green)}.cell-remark{display:flex;align-items:center;gap:4px;padding:6px 7px;font-size:10px;color:var(--muted);background:#f6f6f1;border-radius:6px;margin:3px 0 6px}.cell-remark span{flex:1}.grade-row td,.grade-row th{font-size:10px;padding:5px 12px;background:#f6f9f5;color:var(--muted);font-weight:400;text-align:left;border-bottom:1px solid var(--line)}.note-edit{display:inline-flex;align-items:center;gap:1px;padding:0 6px 4px;font-size:9px;color:#7a8e81}.note-paren{color:#7a8e81;font-weight:600;font-size:10px;user-select:none;cursor:pointer}.note-input{border:1px solid transparent;background:transparent;color:#29463b;font-size:10px;font-weight:600;text-transform:uppercase;padding:0 2px;border-radius:4px;width:48px;text-align:center;letter-spacing:.5px;cursor:text}.note-input:hover{border-color:#c4d7cb;background:white}.note-input:focus{border-color:#56a98b;background:white;outline:none}.note-input::placeholder{color:#b0c0b7;font-weight:400}.is-readonly .allocation select{pointer-events:none;color:var(--ink);opacity:1;background:transparent;-webkit-appearance:none;appearance:none;padding-right:7px}.is-readonly .remove,.is-readonly .add-slot,.is-readonly .new-teacher{display:none!important}.is-readonly .note-input{pointer-events:none;border-color:transparent!important;background:transparent!important;color:#29463b}.is-readonly .note-edit.is-empty{display:none!important}.is-readonly .note-paren{cursor:default;pointer-events:none}.is-readonly .sidebar{display:none!important}.is-readonly .workspace{grid-template-columns:1fr!important}.auth-btn{display:inline-flex;align-items:center;gap:6px}.auth-btn.is-unlocked{background:#eaf3ee;color:var(--green);border-color:#b4dacb}.pin-modal{border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 40px #20333026;padding:22px 24px;max-width:300px;width:90%;background:white;color:var(--ink)}.pin-modal::backdrop{background:#2033304d;backdrop-filter:blur(3px)}.pin-modal h3{margin:0 0 6px;font-size:16px;font-weight:650}.pin-modal p{margin:0 0 14px;font-size:12px;color:var(--muted)}.pin-modal input{width:100%;border:1px solid #d5ddd7;border-radius:8px;padding:9px;font-size:22px;letter-spacing:6px;text-align:center;box-sizing:border-box;margin-bottom:12px}.pin-modal input:focus{border-color:var(--green);outline:none}.pin-actions{display:flex;gap:8px;justify-content:flex-end}.pin-error{color:#b75436;font-size:11px;margin-top:9px;text-align:center}.kommune-logo{height:44px;width:auto;display:block;object-fit:contain}.brand-divider{width:1px;height:38px;background:#d5ddd7;margin:0 4px}.hero-panorama{position:relative;height:165px;overflow:hidden;border-bottom:1px solid var(--line);background:#133227;cursor:default}.hero-bg{position:absolute;inset:0;background:url('img/skole_drone.jpg') center 44% / cover no-repeat;transition:transform .8s cubic-bezier(.2,.8,.2,1),filter .6s ease;transform:scale(1)}.hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(16,45,36,.18) 0%,rgba(16,45,36,.02) 45%,rgba(16,45,36,.36) 100%),radial-gradient(ellipse at 50% 50%,transparent 45%,rgba(10,30,22,.32) 100%);pointer-events:none;transition:opacity .6s ease;opacity:.95}.hero-panorama:hover .hero-bg{transform:scale(1.045);filter:brightness(1.06) saturate(1.06)}.hero-panorama:hover .hero-overlay{opacity:.75}.schedule-modal{border:1px solid var(--line);border-radius:16px;box-shadow:0 16px 50px rgba(20,50,40,.2);padding:0;max-width:980px;width:94%;background:var(--paper);color:var(--ink);max-height:90vh;display:flex;flex-direction:column}.schedule-modal::backdrop{background:rgba(20,40,30,.5);backdrop-filter:blur(4px)}.schedule-modal-head{display:flex;justify-content:space-between;align-items:center;padding:16px 22px;background:#f9fbf9;border-bottom:1px solid var(--line)}.schedule-head-title{display:flex;align-items:center;gap:12px}.schedule-icon-wrap{display:grid;place-items:center;width:38px;height:38px;background:var(--soft);color:var(--green);border-radius:10px}.schedule-head-title h3{margin:0;font-size:17px;font-weight:650;color:var(--ink)}.schedule-head-title p{margin:2px 0 0;font-size:11px;color:var(--muted)}.schedule-modal-body{padding:18px 22px;overflow-y:auto;flex:1}.schedule-picker-row{display:flex;align-items:center;gap:12px;margin-bottom:16px;background:#f5f8f5;padding:11px 15px;border-radius:10px;border:1px solid var(--line)}.schedule-picker-row label{font-size:12px;font-weight:650;color:var(--green);white-space:nowrap}.schedule-select{flex:1;min-width:0;padding:8px 12px;border:1px solid #c8d8ce;border-radius:8px;font-size:13px;font-weight:600;background:white;color:var(--ink);cursor:pointer}.schedule-select:focus{border-color:var(--green);outline:none}.schedule-teacher-card{display:flex;justify-content:space-between;align-items:center;background:linear-gradient(135deg,var(--green),#0e4f3f);color:white;padding:13px 18px;border-radius:12px;margin-bottom:15px;flex-wrap:wrap;gap:10px}.schedule-teacher-name{font-size:18px;font-weight:700;letter-spacing:-.3px}.schedule-teacher-badges{display:flex;gap:8px;flex-wrap:wrap}.schedule-pill{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.2);backdrop-filter:blur(4px);padding:4px 11px;border-radius:20px;font-size:11px;font-weight:600}.schedule-days-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.schedule-day-col{background:#f8faf8;border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;flex-direction:column;min-width:0}.schedule-day-col.has-shifts{background:white;border-color:#d5e5db}.schedule-day-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #edf2ee}.schedule-day-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}.schedule-day-col.has-shifts .schedule-day-title{color:var(--green)}.schedule-day-min{font-size:10px;font-weight:650;color:var(--green);background:var(--soft);padding:2px 6px;border-radius:4px}.schedule-shift-list{display:flex;flex-direction:column;gap:6px;flex:1}.schedule-shift-item{background:#f3f7f4;border:1px solid #e1ebe4;border-radius:7px;padding:7px 9px;font-size:11px}.schedule-shift-time{font-size:10px;font-weight:700;color:var(--green);margin-bottom:2px}.schedule-shift-label{font-weight:600;color:var(--ink);line-height:1.25}.schedule-shift-note{font-size:9.5px;color:var(--muted);margin-top:3px;background:white;display:inline-block;padding:1px 5px;border-radius:4px;border:1px solid #e5ede8}.schedule-shift-duration{font-size:9px;color:#5a7368;float:right}.schedule-no-shifts{font-size:11px;color:#a4b4ac;font-style:italic;padding:16px 0;text-align:center}.schedule-extras-row{margin-top:13px;background:#fcfaf5;border:1px solid #ede5d5;border-radius:10px;padding:11px 15px}.schedule-extras-title{font-size:11px;font-weight:700;color:var(--amber);margin-bottom:7px;text-transform:uppercase;letter-spacing:.6px}.schedule-extras-list{display:flex;flex-wrap:wrap;gap:8px}.schedule-empty-state{text-align:center;padding:36px 20px;color:var(--muted)}.schedule-empty-state svg{width:42px;height:42px;color:#a8c2b5;margin-bottom:10px}.schedule-modal-foot{display:flex;justify-content:space-between;align-items:center;padding:13px 22px;border-top:1px solid var(--line);background:#f9fbf9}@media(max-width:768px){.schedule-days-grid{grid-template-columns:1fr;gap:8px}.schedule-modal{width:96%;max-height:94vh}.schedule-modal-body{padding:14px 16px}}@media(max-width:520px){.kommune-logo{height:34px}.brand-divider{height:28px}.hero-panorama{height:120px}#my-schedule-btn span{display:inline}}@media print{.sections{display:none}.note-edit.is-empty{display:none!important}.note-input{border:none!important;background:none!important;padding:0!important;color:black!important}#auth-btn,#my-schedule-btn,.hero-panorama{display:none!important}}
 </style>
 </head>
 <body>
-<header class="top"><div class="brand"><img src="img/nittedal_kommune.svg" alt="Nittedal kommune" class="kommune-logo"><div class="brand-divider" aria-hidden="true"></div><div><p class="eyebrow">ROTNES SKOLE · UKESPLAN</p><h1>Inspeksjon</h1></div></div><div class="actions"><span class="save" id="save-status" role="status">Lagret lokalt</span><button class="button auth-btn" id="auth-btn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span>Lås opp</span></button><button class="button primary" id="pdf"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h8l4 4v14H6zM14 2v4h4M9 12h6M9 16h6"/></svg>Generer PDF</button></div></header>
-<div class="hero-panorama" aria-hidden="true"></div>
+<header class="top"><div class="brand"><img src="img/nittedal_kommune.svg" alt="Nittedal kommune" class="kommune-logo"><div class="brand-divider" aria-hidden="true"></div><div><p class="eyebrow">ROTNES SKOLE · UKESPLAN</p><h1>Inspeksjon</h1></div></div><div class="actions"><span class="save" id="save-status" role="status">Lagret lokalt</span><button class="button auth-btn" id="auth-btn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span>Lås opp</span></button><button class="button" id="my-schedule-btn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a6.5 6.5 0 0 1 13 0"/></svg><span>Se dine inspeksjonstider</span></button><button class="button primary" id="pdf"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h8l4 4v14H6zM14 2v4h4M9 12h6M9 16h6"/></svg>Generer PDF</button></div></header>
+<div class="hero-panorama" aria-hidden="true"><div class="hero-bg"></div><div class="hero-overlay"></div></div>
 <main class="page"><section class="intro"><div><h2>Ukas vaktplan</h2><p>Velg lærere direkte i planen. Minuttene regnes ut underveis.</p><div id="focus-hint" class="focus-hint" hidden><span id="focus-label"></span><button id="clear-focus">Fjern markering</button></div></div><div class="metrics" id="metrics"></div></section><div class="workspace"><section class="card" aria-label="Vaktplan"><nav class="sections" aria-label="Velg type tilsyn"><button data-section="all" aria-pressed="true">Hele planen</button><button data-section="inspection" aria-pressed="false">Inspeksjon</button><button data-section="meals" aria-pressed="false">Tilsyn ved spising</button></nav><div class="plan-tools"><nav class="days" aria-label="Vis ukedag"><button class="day" data-day="all" aria-pressed="true">Hele uka</button><button class="day" data-day="0" aria-pressed="false">Man</button><button class="day" data-day="1" aria-pressed="false">Tir</button><button class="day" data-day="2" aria-pressed="false">Ons</button><button class="day" data-day="3" aria-pressed="false">Tor</button><button class="day" data-day="4" aria-pressed="false">Fre</button></nav><label class="extra-toggle"><input id="show-extras" type="checkbox">Vis ekstra kolonner</label></div><div class="table-scroll"><table id="plan"><caption hidden>Inspeksjonsplan for mandag til fredag. Velg lærernavn fra listen i hvert navnefelt.</caption><thead><tr id="table-head"></tr></thead><tbody id="plan-body"></tbody></table></div><div class="plan-foot">Alle oppføringer teller fullt, også enkeltelever, stjerner og parenteser. Ekstrakolonner mangler dagoverskrift i kilden og teller også med.</div></section><aside class="sidebar"><section class="card" aria-label="Minutter per lærer"><div class="side-head"><h2>Minutter per lærer</h2><p>Inspeksjon og spising, samlet for hele uka.</p><div class="search-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/></svg><input id="search-teachers" type="search" placeholder="Finn en lærer …" aria-label="Søk i læreroversikten"></div><div class="sort"><span>Klikk et navn for å markere vaktene</span><select id="sort-teachers" aria-label="Sorter læreroversikten"><option value="name">Etter navn</option><option value="minutes">Flest minutter</option></select></div></div><div class="totals" id="totals"></div><form class="new-teacher" id="teacher-form"><label for="teacher-name">Legg til en ny lærer</label><div class="name-input"><input id="teacher-name" placeholder="Lærerens navn" required maxlength="70" autocomplete="off"><button type="submit" aria-label="Legg til lærer">+</button></div><span class="form-message" id="teacher-message" role="status"></span></form></section><p class="privacy">Planen lagres automatisk i skyen for innloggede inspektører. Hver oppføring gir full tid; samme lærer flere steder i samme tidsbolk telles flere ganger.</p></aside></div></main>
 <div id="toast" class="toast" role="status" hidden></div>
 <dialog id="pin-modal" class="pin-modal"><form method="dialog" id="pin-form"><h3>Inspektør-innlogging</h3><p>Skriv inn 4-sifret kode for å redigere:</p><input id="pin-input" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="10" placeholder="••••" autocomplete="off" required><div class="pin-actions"><button type="button" class="button" id="pin-cancel">Avbryt</button><button type="submit" class="button primary">Lås opp</button></div><div id="pin-error" class="pin-error" hidden>Feil kode. Prøv igjen.</div></form></dialog>
+<dialog id="schedule-modal" class="schedule-modal"><div class="schedule-modal-head"><div class="schedule-head-title"><div class="schedule-icon-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a6.5 6.5 0 0 1 13 0"/></svg></div><div><h3>Se dine inspeksjonstider</h3><p>Velg navnet ditt for å se din personlige vaktplan for uka.</p></div></div><button type="button" class="button" id="close-schedule-modal" aria-label="Lukk">×</button></div><div class="schedule-modal-body"><div class="schedule-picker-row"><label for="schedule-teacher-select">Velg lærer:</label><select id="schedule-teacher-select" class="schedule-select"><option value="">– Velg lærer fra listen … –</option></select></div><div id="schedule-results" class="schedule-results"></div></div><div class="schedule-modal-foot"><button type="button" class="button" id="schedule-close-foot">Lukk</button><button type="button" class="button primary" id="download-schedule-img" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Last ned som bilde</span></button></div></dialog>
 <script id="initial-data" type="application/json">{"version":1,"id":"inspection-plan-20261013-v3-meals","teachers":["Agnieszka","Anita","Bendik","Benedikte","Carina","Charlotte","Christian","Edit","Eiril","Elin C.D.","Elin Da","Espen","Eurika","Githani","Hanna","Heidi B","Heidi K","Helene C","Helene H","Hilde G","Hilde H","Ida B","Ingela","Inger C","Irina","Jonas","Kari","Karoline","Kjersti","Kristel","Kristin","Lena","Lillia","Lina","Lusine","Malgorzata","Mariann","Marianne A","Marianne T","Meline","Migle","Motia","Niall","Nina B","Nina M","Pål","Rachel","Robert","Sanne","Silje","Silje M","Steffen","Tim","Tone T","Toril","Vibeke","Vida","Vilde","Yasmeen","Zunira"],"groups":[{"start":2,"time":"08.00–08.15","minutes":15,"grades":"1.–7. trinn","rows":[{"sourceRow":3,"label":"Inspeksjon","detail":"","cells":[[{"teacher":"Robert","note":""}],[{"teacher":"Vilde","note":""}],[],[{"teacher":"Robert","note":""}],[{"teacher":"Zunira","note":""}],[{"teacher":"Vilde","note":""}],[],[{"teacher":"Robert","note":""}],[],[],[{"teacher":"Robert","note":""}],[],[{"teacher":"Robert","note":""}],[{"teacher":"Vilde","note":"()"}],[],[],[],[],[],[],[],[],[],[],[]]},{"sourceRow":4,"label":"Følger enkeltelever","detail":"","cells":[[],[{"teacher":"Sanne","note":""},{"teacher":"Marianne T","note":""}],[],[{"teacher":"Marianne T","note":""},{"teacher":"Sanne","note":""}],[],[{"teacher":"Marianne T","note":""},{"teacher":"Sanne","note":""}],[],[{"teacher":"Marianne T","note":""},{"teacher":"Sanne","note":""}],[],[{"teacher":"Marianne T","note":""},{"teacher":"Sanne","note":""}],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]}]},{"start":5,"time":"09.30–09.45","minutes":15,"grades":"1.–7. trinn","rows":[{"sourceRow":6,"label":"Jordet","detail":"","cells":[[{"teacher":"Silje M","note":""}],[{"teacher":"Toril","note":""}],[{"teacher":"Robert","note":"(M/L/H)"}],[{"teacher":"Heidi K","note":""}],[{"teacher":"Agnieszka","note":""}],[],[{"teacher":"Robert","note":"(M/L/H)"}],[{"teacher":"Kristel","note":""}],[{"teacher":"Mariann","note":""}],[],[{"teacher":"Yasmeen","note":""}],[{"teacher":"Agnieszka","note":""}],[{"teacher":"Edit","note":""}],[{"teacher":"Pål","note":"(L/H)"}],[],[{"teacher":"Kristel","note":""}],[{"teacher":"Zunira","note":""}],[{"teacher":"Pål","note":"(L/H)"}],[{"teacher":"Agnieszka","note":""}],[],[],[{"teacher":"Elin Da","note":""}],[{"teacher":"Toril","note":""}],[{"teacher":"Pål","note":"(L/H)"}],[{"teacher":"Agnieszka","note":"()"}]]},{"sourceRow":7,"label":"Skolegård","detail":"småtrinnet og ved flaggstanga","cells":[[],[],[{"teacher":"Zunira","note":""}],[{"teacher":"Migle","note":""}],[{"teacher":"Meline","note":"*"}],[],[],[{"teacher":"Toril","note":""}],[{"teacher":"Karoline","note":"*"}],[],[{"teacher":"Anita","note":""}],[{"teacher":"Karoline","note":"*"}],[{"teacher":"Migle","note":""}],[],[{"teacher":"Kristin","note":""}],[{"teacher":"Karoline","note":"*"}],[{"teacher":"Kari","note":""}],[],[{"teacher":"Zunira","note":""}],[{"teacher":"Meline","note":"*"}],[],[],[],[],[]]},{"sourceRow":8,"label":"Storskolegård/bandybane","detail":"","cells":[[{"teacher":"Yasmeen","note":""}],[{"teacher":"Irina","note":""}],[{"teacher":"Vilde","note":""}],[],[{"teacher":"Benedikte","note":""}],[{"teacher":"Irina","note":""}],[{"teacher":"Yasmeen","note":""}],[{"teacher":"Heidi K","note":""}],[],[{"teacher":"Rachel","note":""}],[{"teacher":"Irina","note":""}],[{"teacher":"Lusine","note":""}],[],[],[{"teacher":"Irina","note":""}],[{"teacher":"Elin C.D.","note":""}],[],[],[{"teacher":"Kjersti","note":""}],[{"teacher":"Lina","note":""}],[],[],[],[],[]]},{"sourceRow":9,"label":"Skråningen (4.– 7.)","detail":"","cells":[[{"teacher":"Kristel","note":""}],[{"teacher":"Hilde H","note":""}],[],[{"teacher":"Zunira","note":""}],[{"teacher":"Heidi B","note":""}],[],[],[{"teacher":"Kristel","note":""}],[{"teacher":"Toril","note":""}],[],[{"teacher":"Nina M","note":""}],[{"teacher":"Heidi K","note":""}],[{"teacher":"Nina B","note":""}],[],[{"teacher":"Yasmeen","note":""}],[{"teacher":"Carina","note":""}],[],[],[],[],[],[],[],[],[]]},{"sourceRow":10,"label":"Følger enkeltelever","detail":"","cells":[[{"teacher":"Migle","note":"(E)"},{"teacher":"Niall","note":"(A)"},{"teacher":"Lena","note":"(D)"},{"teacher":"Carina","note":"(L)"},{"teacher":"Eiril","note":"(F)"}],[],[{"teacher":"Vida","note":"(E)"},{"teacher":"Niall","note":"(A)"},{"teacher":"Vilde","note":"(D)"},{"teacher":"Carina","note":"(L)"},{"teacher":"Eiril","note":"(F)"}],[],[{"teacher":"Lillia","note":"(E)"},{"teacher":"Niall","note":"(A)"},{"teacher":"Vilde","note":"(D)"},{"teacher":"Carina","note":"(L)"},{"teacher":"Eiril","note":"(F)"},{"teacher":"Robert","note":"(M)"}],[],[{"teacher":"Migle","note":"(E)"},{"teacher":"Meline","note":"(A)"},{"teacher":"Lena","note":"(D)"},{"teacher":"Heidi B","note":"(L)"},{"teacher":"Robert","note":"(F)"}],[],[{"teacher":"Migle","note":"(E)"},{"teacher":"Niall","note":"(A)"},{"teacher":"Vilde","note":"(D)"},{"teacher":"Malgorzata","note":"(L)"},{"teacher":"Eiril","note":"(F)"},{"teacher":"Robert","note":"(M)"}],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]}]},{"start":11,"time":"11.00–11.30","minutes":30,"grades":"5.–7. trinn","rows":[{"sourceRow":12,"label":"Jordet","detail":"","cells":[[{"teacher":"Rachel","note":""}],[],[],[{"teacher":"Ida B","note":""}],[],[{"teacher":"Agnieszka","note":""}],[{"teacher":"Christian","note":""}],[],[{"teacher":"Agnieszka","note":""}],[],[],[{"teacher":"Vibeke","note":""}],[{"teacher":"Agnieszka","note":"()"}],[],[],[],[],[],[],[],[],[],[],[],[]]},{"sourceRow":13,"label":"Storskolegård/","detail":"bandybanen","cells":[[],[{"teacher":"Nina B","note":""}],[],[{"teacher":"Nina B","note":""}],[],[{"teacher":"Helene C","note":""}],[{"teacher":"Nina B","note":""}],[],[{"teacher":"Nina M","note":""}],[],[{"teacher":"Toril","note":""}],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]},{"sourceRow":14,"label":"Skolegård","detail":"småtrinnet og ved flaggstanga","cells":[[],[{"teacher":"Espen","note":""}],[],[{"teacher":"Githani","note":""}],[{"teacher":"Toril","note":""}],[],[{"teacher":"Ingela","note":""}],[{"teacher":"Eurika","note":"(TL)"}],[],[{"teacher":"Sanne","note":""}],[],[{"teacher":"Espen","note":""}],[],[],[],[],[],[],[],[],[],[],[],[],[]]},{"sourceRow":15,"label":"Bekken","detail":"","cells":[[{"teacher":"Kristel","note":""}],[],[{"teacher":"Rachel","note":""}],[{"teacher":"Migle","note":""}],[],[{"teacher":"Toril","note":""}],[{"teacher":"Espen","note":""}],[{"teacher":"Lena","note":""}],[],[{"teacher":"Christian","note":""}],[{"teacher":"Marianne A","note":""}],[],[],[{"teacher":"Migle","note":""}],[],[],[],[],[],[],[],[],[],[],[]]},{"sourceRow":16,"label":"Følge enkeltelever","detail":"","cells":[[{"teacher":"Lillia","note":"(E)"}],[{"teacher":"Christian","note":"(D)"}],[],[{"teacher":"Vilde","note":"(D)"}],[{"teacher":"Yasmeen","note":"(E)"}],[],[{"teacher":"Vida","note":"(E)"}],[{"teacher":"Vilde","note":"(D)"}],[],[{"teacher":"Migle","note":"(E)"}],[{"teacher":"Lena","note":"(D)"}],[],[{"teacher":"Yasmeen","note":"(E)"}],[{"teacher":"Vilde","note":"( (D))"}],[],[],[],[],[],[],[],[],[],[],[]]}]},{"start":17,"time":"11.30–12.00","minutes":30,"grades":"1.–4. trinn","rows":[{"sourceRow":18,"label":"Bandybanen/ Jordet","detail":"","cells":[[{"teacher":"Anita","note":""}],[{"teacher":"Malgorzata","note":"(M/L/H)"}],[],[{"teacher":"Robert","note":"(M/L/H)"}],[{"teacher":"Elin Da","note":""}],[],[],[{"teacher":"Pål","note":"(L/H)"}],[],[{"teacher":"Pål","note":"(L/H)"}],[{"teacher":"Heidi K","note":""}],[{"teacher":"Jonas","note":""}],[],[{"teacher":"Pål","note":"(L/H)"}],[],[],[],[],[],[],[],[],[],[],[]]},{"sourceRow":19,"label":"Store skolegård","detail":"","cells":[[{"teacher":"Heidi K","note":""}],[],[],[{"teacher":"Heidi K","note":""}],[{"teacher":"Zunira","note":""}],[],[{"teacher":"Irina","note":""}],[],[],[],[{"teacher":"Kari","note":""}],[],[{"teacher":"Lina","note":""}],[],[],[],[],[],[],[],[],[],[],[],[]]},{"sourceRow":20,"label":"Skolegård","detail":"småtrinnet og ved flaggstanga","cells":[[],[],[{"teacher":"Kjersti","note":"*"}],[{"teacher":"Irina","note":""}],[{"teacher":"Jonas","note":""}],[],[],[{"teacher":"Elin C.D.","note":"*"}],[{"teacher":"Irina","note":""}],[{"teacher":"Migle","note":""}],[],[],[{"teacher":"Silje","note":"*"}],[{"teacher":"Migle","note":""}],[],[],[],[{"teacher":"Karoline","note":"*"}],[{"teacher":"Mariann","note":""}],[{"teacher":"Kjersti","note":""}],[],[],[{"teacher":"Motia","note":"*"}],[{"teacher":"Charlotte","note":""}],[]]},{"sourceRow":21,"label":"Følger enkeltelever","detail":"","cells":[[{"teacher":"Jonas","note":"(A)"},{"teacher":"Hanna","note":"(L)"},{"teacher":"Robert","note":"(F)"}],[],[{"teacher":"Niall","note":"(A)"},{"teacher":"Carina","note":"(L)"},{"teacher":"Eiril","note":"(F)"}],[],[{"teacher":"Niall","note":"(A)"},{"teacher":"Carina","note":"(L)"},{"teacher":"Robert","note":"(M)"},{"teacher":"Eiril","note":"(F)"}],[],[{"teacher":"Meline","note":"(A)"},{"teacher":"Carina","note":"(L)"},{"teacher":"Robert","note":"(M)"},{"teacher":"Eiril","note":"(F)"}],[],[{"teacher":"Niall","note":"(A)"},{"teacher":"Carina","note":"(L)"},{"teacher":"Robert","note":"(F)"}],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]}]},{"start":22,"time":"13.00–13.15","minutes":15,"grades":"","rows":[{"label":"Jordet","detail":"","sourceRow":23,"cells":[[],[],[],[],[{"teacher":"Tim","note":""}],[{"teacher":"Pål","note":"(L/H)"}],[],[],[{"teacher":"Pål","note":"(L/H)"}],[{"teacher":"Irina","note":""}],[{"teacher":"Ida B","note":""}],[],[{"teacher":"Marianne A","note":""}],[],[],[],[],[],[],[],[],[],[],[],[]]},{"label":"Skolegård","detail":"småtrinnet og ved flaggstanga","sourceRow":24,"cells":[[],[],[],[],[],[{"teacher":"Kristel","note":""}],[],[],[{"teacher":"Eurika","note":""}],[{"teacher":"Zunira","note":""}],[],[{"teacher":"Vibeke","note":""}],[],[],[],[],[],[],[],[],[],[],[],[],[]]},{"label":"Skråningen","detail":"","sourceRow":25,"cells":[[],[],[],[],[{"teacher":"","note":"x","marker":true}],[],[{"teacher":"Christian","note":""}],[],[{"teacher":"Helene H","note":""}],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]},{"label":"Storskolegård/bandybanen","detail":"","sourceRow":26,"cells":[[{"teacher":"Helene C","note":""}],[{"teacher":"Bendik","note":""}],[],[],[],[{"teacher":"Githani","note":""}],[{"teacher":"Toril","note":""}],[],[{"teacher":"Bendik","note":""}],[{"teacher":"Heidi B","note":""}],[],[{"teacher":"Kristel","note":""}],[],[],[],[],[],[],[],[],[],[],[],[],[]]},{"label":"Følger enkeltelever","detail":"","sourceRow":27,"cells":[[],[],[],[],[],[{"teacher":"Migle","note":"(E)"},{"teacher":"Hanna","note":"(L)"},{"teacher":"Vida","note":"(D)"},{"teacher":"Robert","note":"(F)"}],[],[{"teacher":"Migle","note":"(E)"},{"teacher":"Niall","note":"(A)"},{"teacher":"Carina","note":"(L)"},{"teacher":"Vilde","note":"(D)"},{"teacher":"Robert","note":"(F)"}],[],[{"teacher":"Yasmeen","note":"(E)"},{"teacher":"Vilde","note":"I parentes · (D)"}],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]}],"dayGrades":["7. trinn","","4.–7. trinn","3.–7. trinn","5.–7. trinn"]},{"kind":"meals","time":"Tilsyn ved spising","minutes":30,"grades":"Klassevis tilsyn","rows":[{"label":"1A","detail":"","sourceRow":30,"cells":[[{"teacher":"Elin C.D.","note":""}],[],[{"teacher":"Karoline","note":""}],[],[{"teacher":"Kjersti","note":""}],[],[],[],[{"teacher":"Elin C.D.","note":""}],[],[],[{"teacher":"Elin C.D.","note":""}],[],[],[],[],[],[],[],[],[],[],[],[],[]]},{"label":"1B","detail":"","sourceRow":31,"cells":[[{"teacher":"Silje","note":""}],[],[{"teacher":"Kjersti","note":""}],[],[],[],[{"teacher":"Karoline","note":""}],[],[{"teacher":"Silje","note":""}],[],[],[{"teacher":"Silje","note":""}],[],[],[],[],[],[],[],[],[],[],[],[],[]]},{"label":"1C","detail":"","sourceRow":32,"cells":[[{"teacher":"Hilde G","note":""}],[],[{"teacher":"Hilde G","note":""}],[],[],[{"teacher":"Hilde G","note":""}],[],[{"teacher":"Hilde G","note":""}],[],[],[{"teacher":"Meline","note":""}],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]},{"label":"2A","detail":"","sourceRow":33,"cells":[[{"teacher":"Motia","note":""}],[],[{"teacher":"Anita","note":""}],[],[{"teacher":"Anita","note":""}],[],[{"teacher":"Motia","note":""}],[],[{"teacher":"Anita","note":""}],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]},{"label":"2B","detail":"","sourceRow":34,"cells":[[{"teacher":"Kristin","note":""}],[],[{"teacher":"Motia","note":""}],[],[{"teacher":"Kristin","note":""}],[],[],[{"teacher":"Kristin","note":""}],[],[],[{"teacher":"Kristin","note":""}],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]},{"label":"2C","detail":"","sourceRow":35,"cells":[[{"teacher":"Zunira","note":""}],[],[{"teacher":"Kari","note":""}],[],[{"teacher":"Kari","note":""}],[],[{"teacher":"Zunira","note":""}],[],[{"teacher":"Kari","note":""}],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]},{"label":"3A","detail":"","sourceRow":36,"cells":[[{"teacher":"Lina","note":""}],[],[{"teacher":"Lusine","note":""}],[],[{"teacher":"Lina","note":""}],[],[{"teacher":"Lina","note":""}],[],[{"teacher":"Lusine","note":""}],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]},{"label":"3B","detail":"","sourceRow":37,"cells":[[{"teacher":"Edit","note":""}],[],[{"teacher":"Edit","note":""}],[],[{"teacher":"Steffen","note":""}],[],[{"teacher":"Charlotte","note":""}],[],[{"teacher":"Edit","note":""}],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]},{"label":"3C","detail":"","sourceRow":38,"cells":[[{"teacher":"Irina","note":""}],[],[{"teacher":"Steffen","note":""}],[],[{"teacher":"Mariann","note":""}],[],[{"teacher":"Irina","note":""}],[],[{"teacher":"Mariann","note":""}],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]},{"label":"4A","detail":"","sourceRow":39,"cells":[[{"teacher":"Eurika","note":""}],[],[],[{"teacher":"Hanna","note":""}],[],[{"teacher":"Hanna","note":""}],[],[{"teacher":"Carina","note":""}],[],[{"teacher":"Hanna","note":""}],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]},{"label":"4B","detail":"","sourceRow":40,"cells":[[{"teacher":"Elin Da","note":""}],[],[{"teacher":"Eurika","note":""}],[],[{"teacher":"Elin Da","note":""}],[],[{"teacher":"Eurika","note":""}],[],[{"teacher":"Elin Da","note":""}],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]},{"label":"4C","detail":"","sourceRow":41,"cells":[[{"teacher":"Marianne T","note":""}],[],[{"teacher":"Marianne T","note":""}],[],[{"teacher":"Malgorzata","note":""}],[],[{"teacher":"Malgorzata","note":""}],[],[{"teacher":"Malgorzata","note":""}],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]},{"label":"5A","detail":"","sourceRow":42,"cells":[[{"teacher":"","note":"x","marker":true}],[],[{"teacher":"Agnieszka","note":""}],[],[{"teacher":"Inger C","note":""}],[],[{"teacher":"Ingela","note":""}],[],[{"teacher":"","note":"x","marker":true}],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]},{"label":"5B","detail":"","sourceRow":43,"cells":[[{"teacher":"Tim","note":"Grønn"}],[],[{"teacher":"Tim","note":""}],[],[{"teacher":"Tone T","note":""}],[],[{"teacher":"Tim","note":""}],[],[{"teacher":"Tim","note":"Gul"}],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]},{"label":"5C","detail":"","sourceRow":44,"cells":[[{"teacher":"Sanne","note":"Gul"}],[],[{"teacher":"Sanne","note":""}],[],[{"teacher":"Christian","note":""}],[],[{"teacher":"Hilde H","note":""}],[],[{"teacher":"Agnieszka","note":"Grønn"}],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]},{"label":"5D","detail":"","sourceRow":45,"cells":[[{"teacher":"Ida B","note":"Blå"}],[],[{"teacher":"Tone T","note":""}],[],[{"teacher":"Lena","note":""}],[],[{"teacher":"Ida B","note":""}],[],[{"teacher":"Ida B","note":"Blå"}],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]},{"label":"6A","detail":"","sourceRow":46,"cells":[[{"teacher":"Nina M","note":""}],[],[{"teacher":"Nina M","note":""}],[],[{"teacher":"Vibeke","note":""}],[],[{"teacher":"Bendik","note":""}],[],[{"teacher":"Nina M","note":""}],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]},{"label":"6B","detail":"","sourceRow":47,"cells":[[{"teacher":"Vibeke","note":""}],[{"teacher":"Lillia","note":"()"}],[],[],[{"teacher":"Vida","note":"()"}],[],[],[{"teacher":"Vida","note":"()"}],[],[],[{"teacher":"Vida","note":"()"}],[],[{"teacher":"Bendik","note":""}],[{"teacher":"Vida","note":"()"}],[],[],[],[],[],[],[],[],[],[],[]]},{"label":"6C","detail":"","sourceRow":48,"cells":[[{"teacher":"Githani","note":""}],[],[{"teacher":"Kristel","note":""}],[],[{"teacher":"Githani","note":""}],[],[{"teacher":"Tone T","note":""}],[],[{"teacher":"Githani","note":""}],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]},{"label":"6D","detail":"","sourceRow":49,"cells":[[{"teacher":"Toril","note":""}],[],[{"teacher":"Benedikte","note":""}],[],[{"teacher":"Benedikte","note":""}],[],[{"teacher":"Benedikte","note":""}],[],[{"teacher":"Benedikte","note":""}],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]},{"label":"7A","detail":"","sourceRow":50,"cells":[[{"teacher":"Marianne A","note":""}],[],[{"teacher":"Bendik","note":""}],[],[{"teacher":"Helene H","note":""}],[],[{"teacher":"Nina B","note":""}],[],[{"teacher":"Helene C","note":""}],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]},{"label":"7B","detail":"","sourceRow":51,"cells":[[{"teacher":"Helene C","note":""}],[],[{"teacher":"Helene C","note":""}],[],[{"teacher":"Marianne A","note":""}],[],[{"teacher":"Espen","note":""}],[],[{"teacher":"Marianne A","note":""}],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]},{"label":"7C","detail":"","sourceRow":52,"cells":[[{"teacher":"Helene H","note":""}],[],[{"teacher":"Helene H","note":""}],[],[{"teacher":"Rachel","note":""}],[],[{"teacher":"Rachel","note":""}],[],[{"teacher":"","note":"Spiser med a og b- klassen","marker":true}],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]}]}]}</script>
 <script src="vendor/jspdf.umd.min.js"></script>
 <script src="vendor/jspdf-autotable.min.js"></script>
@@ -179,6 +180,326 @@ $('pin-form').addEventListener('submit',e=>{
   $('pin-input').select();
  }
 });
+function drawRoundRect(ctx,x,y,w,h,r){
+ if(ctx.roundRect){ctx.beginPath();ctx.roundRect(x,y,w,h,r);return;}
+ ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
+}
+function getTeacherDuties(teacherName){
+ const days=[[],[],[],[],[],[]];
+ let totalMin=0,count=0;
+ for(const g of state.groups){
+  for(const r of g.rows){
+   r.cells.forEach((cell,ci)=>{
+    for(const a of cell){
+     if(a.teacher&&a.teacher.toLocaleLowerCase('nb')===teacherName.toLocaleLowerCase('nb')){
+      const dayIdx=ci<10?Math.floor(ci/2):5;
+      const isMeals=g.kind==='meals';
+      const timeStr=isMeals?'Spising (30 min)':g.time;
+      const noteStr=a.note?(a.note==='()'?'I parentes':a.note):'';
+      days[dayIdx].push({
+       time:timeStr,
+       rawTime:g.time,
+       minutes:g.minutes,
+       label:r.label,
+       detail:r.detail||'',
+       note:noteStr,
+       grades:g.grades||'',
+       kind:g.kind||'inspection',
+       isExtra:ci>=10
+      });
+      totalMin+=g.minutes;
+      count++;
+     }
+    }
+   });
+  }
+ }
+ const parseTime=(t,kind)=>{
+  if(kind==='meals')return 675;
+  const match=t.match(/(\d{1,2})\.(\d{2})/);
+  return match?parseInt(match[1],10)*60+parseInt(match[2],10):999;
+ };
+ for(let d=0;d<6;d++){
+  days[d].sort((x,y)=>parseTime(x.rawTime,x.kind)-parseTime(y.rawTime,y.kind));
+ }
+ return {days,totalMin,count};
+}
+function renderTeacherSchedule(teacherName){
+ const root=$('schedule-results');
+ if(!teacherName){
+  root.replaceChildren();
+  const empty=el('div','schedule-empty-state');
+  empty.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a6.5 6.5 0 0 1 13 0"/></svg><p>Velg navnet ditt ovenfor for å se dine personlige inspeksjons- og spisevakter.</p>';
+  root.append(empty);
+  $('download-schedule-img').disabled=true;
+  return;
+ }
+ $('download-schedule-img').disabled=false;
+ const {days,totalMin,count}=getTeacherDuties(teacherName);
+ root.replaceChildren();
+ const card=el('div','schedule-teacher-card');
+ const nameSpan=el('div','schedule-teacher-name',teacherName);
+ const badges=el('div','schedule-teacher-badges');
+ const p1=el('span','schedule-pill','⏱️ '+totalMin+' minutter uka');
+ const p2=el('span','schedule-pill','📋 '+count+' '+(count===1?'vakt':'vakter'));
+ badges.append(p1,p2);
+ card.append(nameSpan,badges);
+ root.append(card);
+ const dayNames=['Mandag','Tirsdag','Onsdag','Torsdag','Fredag'];
+ const grid=el('div','schedule-days-grid');
+ for(let i=0;i<5;i++){
+  const list=days[i];
+  const dayMin=list.reduce((sum,d)=>sum+d.minutes,0);
+  const col=el('div','schedule-day-col'+(list.length?' has-shifts':''));
+  const head=el('div','schedule-day-head');
+  head.append(el('span','schedule-day-title',dayNames[i]));
+  if(list.length)head.append(el('span','schedule-day-min',dayMin+' min'));
+  col.append(head);
+  if(!list.length){
+   col.append(el('div','schedule-no-shifts','Ingen vakter'));
+  }else{
+   const shiftList=el('div','schedule-shift-list');
+   for(const s of list){
+    const item=el('div','schedule-shift-item');
+    const dur=el('span','schedule-shift-duration',s.minutes+'m');
+    const time=el('div','schedule-shift-time',s.time);
+    time.append(dur);
+    const label=el('div','schedule-shift-label',s.label);
+    item.append(time,label);
+    if(s.note||s.detail){
+     item.append(el('div','schedule-shift-note',s.note||s.detail));
+    }
+    shiftList.append(item);
+   }
+   col.append(shiftList);
+  }
+  grid.append(col);
+ }
+ root.append(grid);
+ if(days[5].length){
+  const exWrap=el('div','schedule-extras-row');
+  exWrap.append(el('div','schedule-extras-title','Ekstra oppføringer (uten fastsatt ukedag):'));
+  const exList=el('div','schedule-extras-list');
+  for(const ex of days[5]){
+   const chip=el('span','schedule-pill',ex.time+' · '+ex.label+(ex.note?' ('+ex.note+')':''));
+   chip.style.background='#fff';chip.style.color='#7d541e';chip.style.border='1px solid #e2d7c5';
+   exList.append(chip);
+  }
+  exWrap.append(exList);
+  root.append(exWrap);
+ }
+}
+function downloadScheduleImage(teacherName){
+ if(!teacherName)return;
+ const {days,totalMin,count}=getTeacherDuties(teacherName);
+ const hasExtras=days[5].length>0;
+ const dateStr=new Date().toLocaleDateString('nb-NO',{day:'numeric',month:'long',year:'numeric'});
+ const W=1200;
+ const maxShifts=Math.max(1,...days.slice(0,5).map(d=>d.length));
+ const H=Math.max(680,210+maxShifts*92+(hasExtras?115:0)+60);
+ const scale=2;
+ const canvas=document.createElement('canvas');
+ canvas.width=W*scale;canvas.height=H*scale;
+ const ctx=canvas.getContext('2d');
+ ctx.scale(scale,scale);
+ ctx.fillStyle='#f5f6f4';
+ ctx.fillRect(0,0,W,H);
+ drawRoundRect(ctx,16,16,W-32,H-32,18);
+ ctx.fillStyle='#ffffff';
+ ctx.fill();
+ ctx.lineWidth=1;
+ ctx.strokeStyle='#dde5e0';
+ ctx.stroke();
+ drawRoundRect(ctx,16,16,W-32,110,18);
+ ctx.fillStyle='#166753';
+ ctx.fill();
+ ctx.fillRect(16,96,W-32,30);
+ ctx.font='bold 11px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
+ ctx.fillStyle='#bfe0d2';
+ ctx.fillText('ROTNES SKOLE · INSPEKSJONSTIDER',38,44);
+ ctx.font='bold 28px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
+ ctx.fillStyle='#ffffff';
+ ctx.fillText(teacherName,38,78);
+ ctx.font='12px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
+ ctx.fillStyle='#d2e8dd';
+ ctx.fillText('Ukeplan per '+dateStr,38,102);
+ const minText=totalMin+' minutter';
+ const cntText=count+' vakter uka';
+ ctx.font='bold 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
+ const w1=ctx.measureText(minText).width+24;
+ const w2=ctx.measureText(cntText).width+24;
+ drawRoundRect(ctx,W-38-w1-w2-10,52,w1,34,17);
+ ctx.fillStyle='rgba(255,255,255,0.2)';
+ ctx.fill();
+ ctx.fillStyle='#ffffff';
+ ctx.fillText(minText,W-38-w1-w2-10+12,73);
+ drawRoundRect(ctx,W-38-w2,52,w2,34,17);
+ ctx.fillStyle='rgba(255,255,255,0.2)';
+ ctx.fill();
+ ctx.fillStyle='#ffffff';
+ ctx.fillText(cntText,W-38-w2+12,73);
+ const colGap=12,marginX=36;
+ const colW=(W-marginX*2-colGap*4)/5;
+ const startY=142;
+ const dayNames=['Mandag','Tirsdag','Onsdag','Torsdag','Fredag'];
+ const colH=maxShifts*92+58;
+ for(let i=0;i<5;i++){
+  const x=marginX+i*(colW+colGap);
+  const list=days[i];
+  const dayMin=list.reduce((sum,d)=>sum+d.minutes,0);
+  drawRoundRect(ctx,x,startY,colW,colH,12);
+  ctx.fillStyle=list.length?'#fbfdfb':'#f8faf8';
+  ctx.fill();
+  ctx.lineWidth=1;
+  ctx.strokeStyle=list.length?'#cde0d5':'#e4ece7';
+  ctx.stroke();
+  ctx.font='bold 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
+  ctx.fillStyle=list.length?'#166753':'#889b93';
+  ctx.fillText(dayNames[i],x+12,startY+24);
+  if(list.length){
+   ctx.font='bold 10px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
+   const mw=ctx.measureText(dayMin+' min').width+12;
+   drawRoundRect(ctx,x+colW-mw-10,startY+11,mw,18,5);
+   ctx.fillStyle='#eaf3ee';
+   ctx.fill();
+   ctx.fillStyle='#166753';
+   ctx.fillText(dayMin+' min',x+colW-mw-10+6,startY+24);
+  }
+  ctx.strokeStyle='#edf2ee';
+  ctx.beginPath();
+  ctx.moveTo(x+10,startY+36);
+  ctx.lineTo(x+colW-10,startY+36);
+  ctx.stroke();
+  if(!list.length){
+   ctx.font='italic 11px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
+   ctx.fillStyle='#abbcb4';
+   ctx.textAlign='center';
+   ctx.fillText('Ingen vakter',x+colW/2,startY+70);
+   ctx.textAlign='left';
+  }else{
+   let cardY=startY+44;
+   for(const shift of list){
+    drawRoundRect(ctx,x+8,cardY,colW-16,80,8);
+    ctx.fillStyle='#f2f7f4';
+    ctx.fill();
+    ctx.strokeStyle='#d7e6dc';
+    ctx.stroke();
+    ctx.font='bold 11px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
+    ctx.fillStyle='#166753';
+    ctx.fillText(shift.time,x+14,cardY+18);
+    ctx.font='9px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
+    ctx.fillStyle='#658277';
+    ctx.fillText(shift.minutes+'m',x+colW-36,cardY+18);
+    ctx.font='bold 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
+    ctx.fillStyle='#203330';
+    let label=shift.label;
+    if(ctx.measureText(label).width>colW-32){
+     while(label.length>3&&ctx.measureText(label+'…').width>colW-32)label=label.slice(0,-1);
+     label+='…';
+    }
+    ctx.fillText(label,x+14,cardY+38);
+    if(shift.note||shift.detail){
+     const sub=shift.note||shift.detail;
+     ctx.font='10px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
+     const subW=Math.min(colW-34,ctx.measureText(sub).width+12);
+     drawRoundRect(ctx,x+14,cardY+48,subW,18,4);
+     ctx.fillStyle='#ffffff';
+     ctx.fill();
+     ctx.strokeStyle='#dce6e0';
+     ctx.stroke();
+     ctx.fillStyle='#556d64';
+     let subText=sub;
+     if(ctx.measureText(subText).width>colW-42){
+      while(subText.length>3&&ctx.measureText(subText+'…').width>colW-42)subText=subText.slice(0,-1);
+      subText+='…';
+     }
+     ctx.fillText(subText,x+20,cardY+61);
+    }
+    cardY+=88;
+   }
+  }
+ }
+ let footerY=startY+colH+16;
+ if(hasExtras){
+  drawRoundRect(ctx,marginX,footerY,W-marginX*2,78,10);
+  ctx.fillStyle='#fdfbf7';
+  ctx.fill();
+  ctx.strokeStyle='#ebdfc8';
+  ctx.stroke();
+  ctx.font='bold 11px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
+  ctx.fillStyle='#a16b26';
+  ctx.fillText('EKSTRA OPPFØRINGER (uten fastsatt dag i planen):',marginX+14,footerY+22);
+  let exX=marginX+14;
+  for(const ex of days[5]){
+   const exText=ex.time+' · '+ex.label+(ex.note?' ('+ex.note+')':'');
+   ctx.font='11px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
+   const ew=ctx.measureText(exText).width+16;
+   drawRoundRect(ctx,exX,footerY+34,ew,30,6);
+   ctx.fillStyle='#ffffff';
+   ctx.fill();
+   ctx.strokeStyle='#e6dcce';
+   ctx.stroke();
+   ctx.fillStyle='#3a3429';
+   ctx.fillText(exText,exX+8,footerY+53);
+   exX+=ew+8;
+  }
+  footerY+=95;
+ }
+ ctx.font='11px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
+ ctx.fillStyle='#83988e';
+ ctx.fillText('Rotnes skole · Nittedal kommune · Digital inspeksjonsplan',marginX,H-26);
+ ctx.textAlign='right';
+ ctx.fillText('Generert '+dateStr,W-marginX,H-26);
+ ctx.textAlign='left';
+ canvas.toBlob(blob=>{
+  if(!blob){notify('Kunne ikke lage bilde.');return;}
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download='Inspeksjonstider-'+teacherName.replace(/\s+/g,'_')+'.png';
+  document.body.append(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),10000);
+  notify('Bilde av vaktplanen for '+teacherName+' er lastet ned!');
+ },'image/png');
+}
+const TEACHER_STORE_KEY='my_schedule_teacher';
+function setupScheduleModal(){
+ const modal=$('schedule-modal');
+ const select=$('schedule-teacher-select');
+ const openModal=()=>{
+  select.replaceChildren();
+  const defOpt=el('option',null,'– Velg lærer fra listen … –');
+  defOpt.value='';
+  select.append(defOpt);
+  for(const name of names()){
+   const o=el('option',null,name);
+   o.value=name;
+   select.append(o);
+  }
+  let saved='';
+  try{saved=localStorage.getItem(TEACHER_STORE_KEY)||'';}catch(e){}
+  if(!state.teachers.includes(saved))saved='';
+  select.value=saved;
+  renderTeacherSchedule(saved);
+  modal.showModal();
+ };
+ $('my-schedule-btn').addEventListener('click',openModal);
+ $('close-schedule-modal').addEventListener('click',()=>modal.close());
+ $('schedule-close-foot').addEventListener('click',()=>modal.close());
+ modal.addEventListener('click',e=>{if(e.target===modal)modal.close();});
+ select.addEventListener('change',()=>{
+  const val=select.value;
+  try{localStorage.setItem(TEACHER_STORE_KEY,val);}catch(e){}
+  renderTeacherSchedule(val);
+ });
+ $('download-schedule-img').addEventListener('click',()=>{
+  const name=select.value;
+  if(name)downloadScheduleImage(name);
+ });
+}
+setupScheduleModal();
 updateAuth();status();renderPlan();renderTotals();pullFromCloud(true);window.addEventListener('focus',()=>pullFromCloud(true));setInterval(()=>pullFromCloud(true),45000);
 })();
 </script>
