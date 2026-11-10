@@ -26,6 +26,8 @@
 const seed=JSON.parse(document.getElementById('initial-data').textContent);
 const clone=value=>JSON.parse(JSON.stringify(value));
 const key='inspeksjon:'+seed.id;
+const MEAL_TIME='11.30–12.00';
+const mealInterval=parseDutyTime(MEAL_TIME);
 let state=clone(seed),day='all',section='all',focusTeacher='',toastTimer;
 const $=id=>document.getElementById(id);
 const PIN_KEY='inspektor_auth_pin',EXPECTED_PIN='7676';
@@ -127,16 +129,12 @@ function el(tag,cls,text){const n=document.createElement(tag);if(cls)n.className
 function isEnkeltDuty(r){
  return !!(r&&r.label&&r.label.toLowerCase().includes('enkelt'));
 }
-function isLunchInspection(g){
- if(!g||g.kind==='meals')return false;
- return /11[.:]00\s*[–-]\s*11[.:]30|11[.:]30\s*[–-]\s*12[.:]00/.test(g.time||'');
-}
 function hasMealDutyOnDay(teacher,dayIdx){
  if(!teacher)return false;
  const mealsGroup=state.groups.find(x=>x.kind==='meals');
  if(!mealsGroup)return false;
  const tLower=teacher.toLocaleLowerCase('nb');
- const cellIndices=typeof dayIdx==='number'?[dayIdx*2,dayIdx*2+1]:[parseInt(dayIdx,10)];
+ const cellIndices=dayIdx<5?[dayIdx*2,dayIdx*2+1]:[dayIdx];
  for(const r of mealsGroup.rows){
   for(const ci of cellIndices){
    if(r.cells[ci]&&r.cells[ci].some(m=>m.teacher&&m.teacher.toLocaleLowerCase('nb')===tLower)){
@@ -146,12 +144,12 @@ function hasMealDutyOnDay(teacher,dayIdx){
  }
  return false;
 }
-function isDoubleDuty(teacher,g,r,dayIdx){
- if(!teacher||!isEnkeltDuty(r))return false;
- if(isLunchInspection(g)){
-  return hasMealDutyOnDay(teacher,dayIdx);
- }
- return false;
+function mealOverlapMinutes(teacher,g,r,dayIdx){
+ if(!teacher||!g||g.kind==='meals'||!isEnkeltDuty(r))return 0;
+ const {start,end}=parseDutyTime(g.time);
+ if(start===null||end===null)return 0;
+ const overlap=Math.min(end,mealInterval.end)-Math.max(start,mealInterval.start);
+ return overlap>0&&hasMealDutyOnDay(teacher,dayIdx)?overlap:0;
 }
 function parseDutyTime(timeStr){
  const m=(timeStr||'').match(/(\d{1,2})[.:](\d{2})\s*[–-]\s*(\d{1,2})[.:](\d{2})/);
@@ -176,7 +174,6 @@ function mergeIntervals(intervals){
 function calculateDayMinutes(dutyList){
  const intervals=[];let unparsed=0;
  for(const d of dutyList){
-  if(d.isDouble||d.isDoubleDuty){continue;}
   if(d.start!=null&&d.end!=null&&d.end>d.start){intervals.push([d.start,d.end]);}
   else{unparsed+=(d.minutes||0);}
  }
@@ -187,27 +184,18 @@ function totals(){
  const teacherDayDuties=new Map(state.teachers.map(n=>[n,new Map()]));
  let count=0;
  for(const g of state.groups){
+  const interval=g.kind==='meals'?mealInterval:parseDutyTime(g.time);
   for(const r of g.rows){
-   const isMeals=g.kind==='meals';
-   const parsed=parseDutyTime(g.time);
    r.cells.forEach((cell,ci)=>{
     if(ci>=10)return;
     const dayKey=Math.floor(ci/2);
-    const dayParam=dayKey;
     for(const a of cell){
      if(a.teacher){
       count++;
       const daysMap=teacherDayDuties.get(a.teacher);
       if(daysMap){
        if(!daysMap.has(dayKey))daysMap.set(dayKey,[]);
-       const double=isDoubleDuty(a.teacher,g,r,dayParam);
-       daysMap.get(dayKey).push({
-        start:isMeals?660:parsed.start,
-        end:isMeals?690:parsed.end,
-        minutes:isMeals?30:g.minutes,
-        isDouble:double,
-        isDoubleDuty:double
-       });
+       daysMap.get(dayKey).push({...interval,minutes:g.minutes});
       }
      }
     }
@@ -234,7 +222,7 @@ function updateDoubleDutyBadges(){
   const dayIdx=alloc.dataset.dayIdx==='extra'?parseInt(alloc.dataset.extraIdx,10):parseInt(alloc.dataset.dayIdx,10);
   const groupIdx=parseInt(alloc.dataset.groupIdx,10);
   const g=state.groups[groupIdx];
-  const isDouble=!!(teacher&&g&&isDoubleDuty(teacher,g,{label:'enkeltelever'},dayIdx));
+  const isDouble=mealOverlapMinutes(teacher,g,{label:'enkeltelever'},dayIdx)>0;
   const badge=alloc.querySelector('.double-duty-badge');
   if(badge)badge.hidden=!isDouble;
  });
@@ -305,7 +293,7 @@ function renderCell(g,r,indices,cellLabel){
 
     const doubleBadge=el('div','double-duty-badge','dobbeltvakt');
     doubleBadge.title='Dobbeltvakt: følger enkeltelev samtidig som tilsyn ved spising';
-    doubleBadge.hidden=!(a.teacher&&isDoubleDuty(a.teacher,g,r,dayParam));
+    doubleBadge.hidden=mealOverlapMinutes(a.teacher,g,r,dayParam)===0;
     field.append(doubleBadge);
    }else if(a.note){
     field.append(el('span','note',a.note==='()'?'I parentes':a.note));
@@ -391,26 +379,25 @@ function getTeacherDuties(teacherName){
  let count=0;
  const tLower=teacherName.toLocaleLowerCase('nb');
  for(const g of state.groups){
+  const isMeals=g.kind==='meals';
+  const interval=isMeals?mealInterval:parseDutyTime(g.time);
+  const minutes=isMeals?mealInterval.end-mealInterval.start:g.minutes;
   for(const r of g.rows){
-   const isMeals=g.kind==='meals';
-   const parsed=parseDutyTime(g.time);
    r.cells.forEach((cell,ci)=>{
     for(const a of cell){
      if(a.teacher&&a.teacher.toLocaleLowerCase('nb')===tLower){
       const isExtra=ci>=10;
       const dayIdx=isExtra?5:Math.floor(ci/2);
       const dayParam=isExtra?ci:dayIdx;
-      const double=isDoubleDuty(a.teacher,g,r,dayParam);
-      const isEnkelt=isEnkeltDuty(r);
-      const timeStr=isMeals?'Spising (30 min)':g.time;
+      const overlap=mealOverlapMinutes(a.teacher,g,r,dayParam);
+      const timeStr=isMeals?'Spising · '+MEAL_TIME:g.time;
       const noteStr=a.note?(a.note==='()'?'I parentes':a.note):'';
       days[dayIdx].push({
        time:timeStr,
        rawTime:g.time,
-       start:isMeals?660:parsed.start,
-       end:isMeals?690:parsed.end,
-       minutes:double?0:(isMeals?30:g.minutes),
-       originalMinutes:isMeals?30:g.minutes,
+       ...interval,
+       minutes:Math.max(0,minutes-overlap),
+       originalMinutes:minutes,
        label:r.label,
        detail:r.detail||'',
        note:noteStr,
@@ -418,8 +405,7 @@ function getTeacherDuties(teacherName){
        kind:g.kind||'inspection',
        isExtra:isExtra,
        ci:ci,
-       isDouble:double,
-       isDoubleDuty:double
+       isDoubleDuty:overlap>0
       });
       if(!isExtra){
        count++;
@@ -475,7 +461,7 @@ function renderTeacherSchedule(teacherName){
    const shiftList=el('div','schedule-shift-list');
    for(const s of list){
     const item=el('div','schedule-shift-item');
-    const dur=el('span','schedule-shift-duration',s.isDoubleDuty?'0m (dobbeltvakt)':s.minutes+'m');
+    const dur=el('span','schedule-shift-duration',s.minutes+'m');
     const time=el('div','schedule-shift-time',s.time);
     time.append(dur);
     const label=el('div','schedule-shift-label',s.label);
