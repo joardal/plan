@@ -26,8 +26,8 @@
 const seed=JSON.parse(document.getElementById('initial-data').textContent);
 const clone=value=>JSON.parse(JSON.stringify(value));
 const key='inspeksjon:'+seed.id;
-const MEAL_TIME='11.30–12.00';
-const mealInterval=parseDutyTime(MEAL_TIME);
+const [EARLY_MEAL,LATE_MEAL]=['11.00–11.30','11.30–12.00']
+ .map(time=>({time,...parseDutyTime(time)}));
 let state=clone(seed),day='all',section='all',focusTeacher='',toastTimer;
 const $=id=>document.getElementById(id);
 const PIN_KEY='inspektor_auth_pin',EXPECTED_PIN='7676';
@@ -129,27 +129,29 @@ function el(tag,cls,text){const n=document.createElement(tag);if(cls)n.className
 function isEnkeltDuty(r){
  return !!(r&&r.label&&r.label.toLowerCase().includes('enkelt'));
 }
-function hasMealDutyOnDay(teacher,dayIdx){
- if(!teacher)return false;
- const mealsGroup=state.groups.find(x=>x.kind==='meals');
- if(!mealsGroup)return false;
- const tLower=teacher.toLocaleLowerCase('nb');
- const cellIndices=dayIdx<5?[dayIdx*2,dayIdx*2+1]:[dayIdx];
- for(const r of mealsGroup.rows){
-  for(const ci of cellIndices){
-   if(r.cells[ci]&&r.cells[ci].some(m=>m.teacher&&m.teacher.toLocaleLowerCase('nb')===tLower)){
-    return true;
-   }
-  }
- }
- return false;
+function mealSlot(row){
+ const grade=parseInt(row.label,10);
+ return grade>=1&&grade<=4?EARLY_MEAL:LATE_MEAL;
 }
 function mealOverlapMinutes(teacher,g,r,dayIdx){
  if(!teacher||!g||g.kind==='meals'||!isEnkeltDuty(r))return 0;
  const {start,end}=parseDutyTime(g.time);
  if(start===null||end===null)return 0;
- const overlap=Math.min(end,mealInterval.end)-Math.max(start,mealInterval.start);
- return overlap>0&&hasMealDutyOnDay(teacher,dayIdx)?overlap:0;
+ const mealsGroup=state.groups.find(x=>x.kind==='meals');
+ if(!mealsGroup)return 0;
+ const tLower=teacher.toLocaleLowerCase('nb');
+ const cellIndices=dayIdx<5?[dayIdx*2,dayIdx*2+1]:[dayIdx];
+ const slots=new Set();
+ for(const row of mealsGroup.rows){
+  if(cellIndices.some(ci=>row.cells[ci]?.some(m=>m.teacher&&m.teacher.toLocaleLowerCase('nb')===tLower))){
+   slots.add(mealSlot(row));
+  }
+ }
+ let minutes=0;
+ for(const slot of slots){
+  minutes+=Math.max(0,Math.min(end,slot.end)-Math.max(start,slot.start));
+ }
+ return minutes;
 }
 function parseDutyTime(timeStr){
  const m=(timeStr||'').match(/(\d{1,2})[.:](\d{2})\s*[–-]\s*(\d{1,2})[.:](\d{2})/);
@@ -184,8 +186,9 @@ function totals(){
  const teacherDayDuties=new Map(state.teachers.map(n=>[n,new Map()]));
  let count=0;
  for(const g of state.groups){
-  const interval=g.kind==='meals'?mealInterval:parseDutyTime(g.time);
+  const inspectionInterval=parseDutyTime(g.time);
   for(const r of g.rows){
+   const {start,end}=g.kind==='meals'?mealSlot(r):inspectionInterval;
    r.cells.forEach((cell,ci)=>{
     if(ci>=10)return;
     const dayKey=Math.floor(ci/2);
@@ -195,7 +198,7 @@ function totals(){
       const daysMap=teacherDayDuties.get(a.teacher);
       if(daysMap){
        if(!daysMap.has(dayKey))daysMap.set(dayKey,[]);
-       daysMap.get(dayKey).push({...interval,minutes:g.minutes});
+       daysMap.get(dayKey).push({start,end,minutes:g.minutes});
       }
      }
     }
@@ -380,9 +383,12 @@ function getTeacherDuties(teacherName){
  const tLower=teacherName.toLocaleLowerCase('nb');
  for(const g of state.groups){
   const isMeals=g.kind==='meals';
-  const interval=isMeals?mealInterval:parseDutyTime(g.time);
-  const minutes=isMeals?mealInterval.end-mealInterval.start:g.minutes;
+  const inspectionInterval=parseDutyTime(g.time);
   for(const r of g.rows){
+   const slot=isMeals?mealSlot(r):inspectionInterval;
+   const {start,end}=slot;
+   const minutes=isMeals?end-start:g.minutes;
+   const timeStr=isMeals?'Spising · '+slot.time:g.time;
    r.cells.forEach((cell,ci)=>{
     for(const a of cell){
      if(a.teacher&&a.teacher.toLocaleLowerCase('nb')===tLower){
@@ -390,12 +396,11 @@ function getTeacherDuties(teacherName){
       const dayIdx=isExtra?5:Math.floor(ci/2);
       const dayParam=isExtra?ci:dayIdx;
       const overlap=mealOverlapMinutes(a.teacher,g,r,dayParam);
-      const timeStr=isMeals?'Spising · '+MEAL_TIME:g.time;
       const noteStr=a.note?(a.note==='()'?'I parentes':a.note):'';
       days[dayIdx].push({
        time:timeStr,
        rawTime:g.time,
-       ...interval,
+       start,end,
        minutes:Math.max(0,minutes-overlap),
        originalMinutes:minutes,
        label:r.label,
